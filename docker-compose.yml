@@ -1,0 +1,22 @@
+services:
+  nginx:
+    build:
+      context: ./nginx
+    image: memorizor/nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - account
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
+  account:
+    build:
+      context: ./services/account
+      target: compiler
+    image: memorizor/services-account-src
+    expose:
+      - 8080
+    volumes:
+      - ./services/account/:/src
+    command: reflex -r "\.go$$" -s -- sh -c "go run ."
