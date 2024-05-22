@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"net/http"
+	"memorizor/services/account/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,12 +11,7 @@ func main() {
 	log.Println("Account service begins.")
 
 	r := gin.Default()
+	ctrl := controller.NewController(&controller.Config{Router: r})
 
-	r.GET("/api/account", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"message": "O",
-		})
-	})
-
-	r.Run(":8080")
+	ctrl.Run(":8080")
 }

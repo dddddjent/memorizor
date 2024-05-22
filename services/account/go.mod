@@ -2,7 +2,10 @@ module memorizor/services/account
 
 go 1.22.3
 
-require github.com/gin-gonic/gin v1.10.0
+require (
+	github.com/gin-gonic/gin v1.10.0
+	github.com/gofrs/uuid v4.4.0+incompatible
+)
 
 require (
 	github.com/bytedance/sonic v1.11.6 // indirect
