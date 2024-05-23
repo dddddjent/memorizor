@@ -11,7 +11,15 @@ func main() {
 	log.Println("Account service begins.")
 
 	r := gin.Default()
-	ctrl := controller.NewController(&controller.Config{Router: r})
+	ctrl := controller.NewController(&controller.Config{
+		Router: r,
+	})
+	// ctrl := controller.NewController(&controller.Config{
+	// 	Router: r,
+	//        UserService: services.NewSUserService(&services.SUserServiceConfig{
+	//
+	//        }),
+	// })
 
 	ctrl.Run(":8080")
 }

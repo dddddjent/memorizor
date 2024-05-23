@@ -24,3 +24,6 @@ func NewSUserService(config *SUserServiceConfig) IUserService {
 func (service *SUserService) GetByUUID(id uuid.UUID) (*model.User, error) {
 	return service.repository.FindByUUID(id)
 }
+func (service *SUserService) SignUp(user *model.User) error {
+	panic("not implmented yet!")
+}

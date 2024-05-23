@@ -9,19 +9,22 @@ import (
 )
 
 type Controller struct {
-	router      *gin.Engine
-	userService services.IUserService
+	router       *gin.Engine
+	userService  services.IUserService
+	tokenService services.ITokenService
 }
 
 type Config struct {
-	Router      *gin.Engine
-	UserService services.IUserService
+	Router       *gin.Engine
+	UserService  services.IUserService
+	TokenService services.ITokenService
 }
 
 func NewController(config *Config) *Controller {
 	ctrl := &Controller{
-		router:      config.Router,
-		userService: config.UserService,
+		router:       config.Router,
+		userService:  config.UserService,
+		tokenService: config.TokenService,
 	}
 	group := ctrl.router.Group(os.Getenv("ACCOUNT_API_URL"))
 

@@ -29,3 +29,9 @@ func (s *SMockUserService) GetByUUID(id uuid.UUID) (*model.User, error) {
 	}
 	return user, nil
 }
+
+func (s *SMockUserService) SignUp(user *model.User) error {
+	args := s.Called(user)
+
+	return args.Error(0)
+}
