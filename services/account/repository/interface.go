@@ -8,4 +8,5 @@ import (
 
 type IUserRepository interface {
 	FindByUUID(uuid.UUID) (*model.User, error)
+	Create(*model.User) error
 }

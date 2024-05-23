@@ -1,9 +1,10 @@
 package controller
 
 import (
+	"log"
 	"memorizor/services/account/controller/validate"
-	httpErr "memorizor/services/account/http_err"
 	"memorizor/services/account/model"
+	"memorizor/services/account/util"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,7 @@ func (ctrl *Controller) signup(c *gin.Context) {
 	if validate.ShouldBindOrBadRequest(c, body) == false {
 		return
 	}
+	log.Println("Post validated")
 
 	user := &model.User{
 		UserName: body.UserName,
@@ -28,7 +30,7 @@ func (ctrl *Controller) signup(c *gin.Context) {
 	}
 
 	if err := ctrl.userService.SignUp(user); err != nil {
-		err := err.(*httpErr.Error)
+		err := err.(*util.Error)
 		c.JSON(err.HttpStatus(), gin.H{
 			"error": err,
 		})
@@ -38,7 +40,7 @@ func (ctrl *Controller) signup(c *gin.Context) {
 	var tokenPair *model.TokenPair
 	tokenPair, err := ctrl.tokenService.CreatePairFromUser(user, "")
 	if err != nil {
-		err := err.(*httpErr.Error)
+		err := err.(*util.Error)
 		c.JSON(err.HttpStatus(), gin.H{
 			"error": err,
 		})

@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"memorizor/services/account/http_err"
+	"memorizor/services/account/util"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +11,7 @@ import (
 func (ctrl *Controller) me(c *gin.Context) {
 	var id uuid.UUID
 	if err := id.Parse(c.Query("uuid")); err != nil {
-		err := httpErr.Error{Type: httpErr.BadRequest, Message: "Can't parse uuid"}
+		err := util.Error{Type: util.BadRequest, Message: "Can't parse uuid"}
 		c.JSON(err.HttpStatus(), gin.H{
 			"error": err,
 		})
@@ -19,7 +19,7 @@ func (ctrl *Controller) me(c *gin.Context) {
 	}
 	user, err := ctrl.userService.GetByUUID(id)
 	if err != nil {
-		err, _ := err.(*httpErr.Error)
+		err, _ := err.(*util.Error)
 		c.JSON(err.HttpStatus(), gin.H{
 			"error": err,
 		})

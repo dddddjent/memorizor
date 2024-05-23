@@ -1,9 +1,10 @@
 package validate
 
 import (
+	"memorizor/services/account/util"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	httpErr "memorizor/services/account/http_err"
 )
 
 type InvalidArg struct {
@@ -26,8 +27,8 @@ func ShouldBindOrBadRequest(c *gin.Context, data any) bool {
 					err.Param(),
 				})
 			}
-			err := httpErr.Error{
-				Type:    httpErr.BadRequest,
+			err := util.Error{
+				Type:    util.BadRequest,
 				Message: "See invalid args for details",
 			}
 			c.JSON(err.HttpStatus(), gin.H{
@@ -36,9 +37,9 @@ func ShouldBindOrBadRequest(c *gin.Context, data any) bool {
 			})
 			return false
 		}
-        
-		err := httpErr.Error{
-			Type:    httpErr.Internal,
+
+		err := util.Error{
+			Type:    util.Internal,
 			Message: "Internal error",
 		}
 		c.JSON(err.HttpStatus(), gin.H{

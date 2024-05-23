@@ -29,3 +29,11 @@ func (r *SMockUserRepository) FindByUUID(id uuid.UUID) (*model.User, error) {
 	}
 	return user, nil
 }
+
+func (r *SMockUserRepository) Create(user *model.User) error {
+	args := r.Called(user) // if is called by this id
+	if args.Get(0) == nil {
+		return nil
+	}
+	return args.Get(0).(error)
+}

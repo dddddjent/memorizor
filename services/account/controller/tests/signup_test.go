@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"memorizor/services/account/controller"
-	httpErr "memorizor/services/account/http_err"
+	"memorizor/services/account/util"
 	"memorizor/services/account/model"
 	"memorizor/services/account/services/mocks"
 	"net/http"
@@ -254,8 +254,8 @@ func TestSignUp(t *testing.T) {
 			Password: "123456",
 		}
 		userService := &services.SMockUserService{}
-		expectErr := &httpErr.Error{
-			Type:    httpErr.Internal,
+		expectErr := &util.Error{
+			Type:    util.Internal,
 			Message: "No",
 		}
 		userService.On("SignUp", mock.AnythingOfType("*model.User")).Return(expectErr)
@@ -289,8 +289,8 @@ func TestSignUp(t *testing.T) {
 			Email:    "333@g.com",
 			Password: "123456",
 		}
-		expectErr := &httpErr.Error{
-			Type:    httpErr.Internal,
+		expectErr := &util.Error{
+			Type:    util.Internal,
 			Message: "No",
 		}
 		userService := &services.SMockUserService{}

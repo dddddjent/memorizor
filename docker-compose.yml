@@ -20,4 +20,15 @@ services:
       - 8080
     volumes:
       - ./services/account/:/src
+    depends_on:
+      - postgres-users
     command: reflex -r "\.go$$" -s -- sh -c "go run ."
+
+  postgres-users:
+    image: 'postgres:latest'
+    env_file: ./.env.dev
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data/users/:/var/lib/postgresql/data/
+    command: ['postgres', '-c', 'log_statement=all']

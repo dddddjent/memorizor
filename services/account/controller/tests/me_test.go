@@ -3,7 +3,7 @@ package controller_test
 import (
 	"encoding/json"
 	"memorizor/services/account/controller"
-	httpErr "memorizor/services/account/http_err"
+	"memorizor/services/account/util"
 	"memorizor/services/account/model"
 	"memorizor/services/account/services/mocks"
 	"net/http"
@@ -64,7 +64,7 @@ func TestMe(t *testing.T) {
 		recorder := httptest.NewRecorder()
 		r.ServeHTTP(recorder, request)
 
-		err := httpErr.Error{Type: httpErr.BadRequest, Message: "Can't parse uuid"}
+		err := util.Error{Type: util.BadRequest, Message: "Can't parse uuid"}
 		expectResponseBody, _ := json.Marshal(gin.H{
 			"error": err,
 		})
@@ -78,7 +78,7 @@ func TestMe(t *testing.T) {
 		// mock the service
 		id, _ := uuid.NewV4()
 		userService := &services.SMockUserService{}
-		err := &httpErr.Error{Type: httpErr.NotFound, Message: "Can't find the user"}
+		err := &util.Error{Type: util.NotFound, Message: "Can't find the user"}
 		userService.On("GetByUUID", id).Return(nil, err)
 
 		r := gin.Default()

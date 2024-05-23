@@ -16,11 +16,11 @@ type GormModel struct {
 
 type User struct {
 	GormModel
-	UUID     uuid.UUID `json:"uuid"`
+	UUID     uuid.UUID `json:"uuid" gorm:"unique"`
 	Name     string    `json:"name"`
 	UserName string    `json:"user_name"`
 	Password string    `json:"password"`
-	Email    string    `json:"email"`
+	Email    string    `json:"email" gorm:"unique"`
 	ImageURL string    `json:"image_url"`
 	Website  string    `json:"website"`
 }
