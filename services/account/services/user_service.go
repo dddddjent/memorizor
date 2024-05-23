@@ -30,7 +30,7 @@ func (service *SUserService) SignUp(user *model.User) error {
 	if err != nil {
 		return &util.Error{
 			Type:    util.Internal,
-			Message: "Failed to encode password",
+			Message: "Failed to encode password\n" + err.Error(),
 		}
 	}
 
