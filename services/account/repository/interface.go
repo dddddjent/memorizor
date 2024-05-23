@@ -6,6 +6,6 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-type UserRepository interface {
-	FindByUUID(uid uuid.UUID) (*model.User, error)
+type IUserRepository interface {
+	FindByUUID(uuid.UUID) (*model.User, error)
 }

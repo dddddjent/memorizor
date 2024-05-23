@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"memorizor/services/account/services"
 	"net/http"
 	"os"
 
@@ -8,18 +9,22 @@ import (
 )
 
 type Controller struct {
-	router *gin.Engine
+	router      *gin.Engine
+	userService services.IUserService
 }
 
 type Config struct {
-	Router *gin.Engine
+	Router      *gin.Engine
+	UserService services.IUserService
 }
 
 func NewController(config *Config) *Controller {
-	ctrl := &Controller{router: config.Router}
+	ctrl := &Controller{
+		router:      config.Router,
+		userService: config.UserService,
+	}
 	group := ctrl.router.Group(os.Getenv("ACCOUNT_API_URL"))
 
-	group.GET("/", ctrl.root)
 	group.GET("/me", ctrl.me)
 	group.POST("/signup", ctrl.signup)
 	group.POST("/signin", ctrl.signin)
@@ -33,24 +38,6 @@ func NewController(config *Config) *Controller {
 
 func (ctrl *Controller) Run(addr string) {
 	ctrl.router.Run(addr)
-}
-
-func (ctrl *Controller) root(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "OK",
-	})
-}
-
-func (ctrl *Controller) me(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "me",
-	})
-}
-
-func (ctrl *Controller) signup(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "signup",
-	})
 }
 
 func (ctrl *Controller) signin(c *gin.Context) {
