@@ -23,7 +23,7 @@ func (r *SMockUserRepository) FindByUUID(id uuid.UUID) (*model.User, error) {
 	if err != nil {
 		err, ok := err.(error)
 		if !ok {
-			panic("Can't cast arg 1 to err")
+			panic("Could not cast arg 1 to err")
 		}
 		return user, err
 	}

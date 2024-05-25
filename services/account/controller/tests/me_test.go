@@ -64,7 +64,7 @@ func TestMe(t *testing.T) {
 		recorder := httptest.NewRecorder()
 		r.ServeHTTP(recorder, request)
 
-		err := util.Error{Type: util.BadRequest, Message: "Can't parse uuid"}
+		err := util.Error{Type: util.BadRequest, Message: "Could not parse uuid"}
 		expectResponseBody, _ := json.Marshal(gin.H{
 			"error": err,
 		})
@@ -78,7 +78,7 @@ func TestMe(t *testing.T) {
 		// mock the service
 		id, _ := uuid.NewV4()
 		userService := &services.SMockUserService{}
-		err := &util.Error{Type: util.NotFound, Message: "Can't find the user"}
+		err := &util.Error{Type: util.NotFound, Message: "Could not find the user"}
 		userService.On("GetByUUID", id).Return(nil, err)
 
 		r := gin.Default()

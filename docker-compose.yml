@@ -23,6 +23,7 @@ services:
       - ./keys/:/keys
     depends_on:
       - postgres-users
+      - redis-tokens
     command: reflex -r "\.go$$" -s -- sh -c "go run ."
 
   postgres-users:
@@ -33,3 +34,11 @@ services:
     volumes:
       - ./data/users/:/var/lib/postgresql/data/
     command: ['postgres', '-c', 'log_statement=all']
+
+  redis-tokens:
+    image: 'redis:latest'
+    env_file: ./.env.dev
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./data/tokens/:/data/
