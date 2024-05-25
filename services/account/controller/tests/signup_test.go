@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"memorizor/services/account/controller"
-	"memorizor/services/account/util"
 	"memorizor/services/account/model"
 	"memorizor/services/account/services/mocks"
+	"memorizor/services/account/util"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -43,7 +43,11 @@ func TestSignUp(t *testing.T) {
 			TokenService: tokenService,
 		})
 
-		postBody, _ := json.Marshal(user)
+		postBody, _ := json.Marshal(map[string]string{
+			"user_name": user.UserName,
+			"email":     user.Email,
+			"Password":  user.Password,
+		})
 		request, err := http.NewRequest(
 			http.MethodPost,
 			baseURL+"/signup",
@@ -55,7 +59,7 @@ func TestSignUp(t *testing.T) {
 		r.ServeHTTP(recorder, request)
 
 		expectCode := http.StatusCreated
-		expectBody, err := json.Marshal(map[string]*model.TokenPair{"tokens": tokenPair})
+		expectBody, err := json.Marshal(map[string]*model.TokenPair{"token_pair": tokenPair})
 		assert.NoError(t, err)
 
 		assert.Equal(t, expectCode, recorder.Code)
@@ -85,7 +89,11 @@ func TestSignUp(t *testing.T) {
 			UserService: userService,
 		})
 
-		postBody, _ := json.Marshal(user1)
+		postBody, _ := json.Marshal(map[string]string{
+			"user_name": user1.UserName,
+			"email":     user1.Email,
+			"Password":  user1.Password,
+		})
 		request, err := http.NewRequest(
 			http.MethodPost,
 			baseURL+"/signup",
@@ -101,11 +109,16 @@ func TestSignUp(t *testing.T) {
 		err = json.Unmarshal(recorder.Body.Bytes(), &actualResp)
 		actualFieldErr := actualResp["invalid_args"][0]["Field"]
 
+		assert.Equal(t, 1, len(actualResp["invalid_args"]))
 		assert.Equal(t, expectCode, recorder.Code)
 		assert.Equal(t, "UserName", actualFieldErr)
 		userService.AssertNotCalled(t, "SignUp")
 
-		postBody, _ = json.Marshal(user2)
+		postBody, _ = json.Marshal(map[string]string{
+			"user_name": user2.UserName,
+			"email":     user2.Email,
+			"Password":  user2.Password,
+		})
 		request, err = http.NewRequest(
 			http.MethodPost,
 			baseURL+"/signup",
@@ -120,6 +133,7 @@ func TestSignUp(t *testing.T) {
 		err = json.Unmarshal(recorder.Body.Bytes(), &actualResp)
 		actualFieldErr = actualResp["invalid_args"][0]["Field"]
 
+		assert.Equal(t, 1, len(actualResp["invalid_args"]))
 		assert.Equal(t, expectCode, recorder.Code)
 		assert.Equal(t, "UserName", actualFieldErr)
 		userService.AssertNotCalled(t, "SignUp")
@@ -146,7 +160,11 @@ func TestSignUp(t *testing.T) {
 			UserService: userService,
 		})
 
-		postBody, _ := json.Marshal(user1)
+		postBody, _ := json.Marshal(map[string]string{
+			"user_name": user1.UserName,
+			"email":     user1.Email,
+			"Password":  user1.Password,
+		})
 		request, err := http.NewRequest(
 			http.MethodPost,
 			baseURL+"/signup",
@@ -162,11 +180,16 @@ func TestSignUp(t *testing.T) {
 		err = json.Unmarshal(recorder.Body.Bytes(), &actualResp)
 		actualFieldErr := actualResp["invalid_args"][0]["Field"]
 
+		assert.Equal(t, 1, len(actualResp["invalid_args"]))
 		assert.Equal(t, expectCode, recorder.Code)
 		assert.Equal(t, "Email", actualFieldErr)
 		userService.AssertNotCalled(t, "SignUp")
 
-		postBody, _ = json.Marshal(user2)
+		postBody, _ = json.Marshal(map[string]string{
+			"user_name": user2.UserName,
+			"email":     user2.Email,
+			"Password":  user2.Password,
+		})
 		request, err = http.NewRequest(
 			http.MethodPost,
 			baseURL+"/signup",
@@ -181,6 +204,7 @@ func TestSignUp(t *testing.T) {
 		err = json.Unmarshal(recorder.Body.Bytes(), &actualResp)
 		actualFieldErr = actualResp["invalid_args"][0]["Field"]
 
+		assert.Equal(t, 1, len(actualResp["invalid_args"]))
 		assert.Equal(t, expectCode, recorder.Code)
 		assert.Equal(t, "Email", actualFieldErr)
 		userService.AssertNotCalled(t, "SignUp")
@@ -207,7 +231,11 @@ func TestSignUp(t *testing.T) {
 			UserService: userService,
 		})
 
-		postBody, _ := json.Marshal(user1)
+		postBody, _ := json.Marshal(map[string]string{
+			"user_name": user1.UserName,
+			"email":     user1.Email,
+			"Password":  user1.Password,
+		})
 		request, err := http.NewRequest(
 			http.MethodPost,
 			baseURL+"/signup",
@@ -223,11 +251,16 @@ func TestSignUp(t *testing.T) {
 		err = json.Unmarshal(recorder.Body.Bytes(), &actualResp)
 		actualFieldErr := actualResp["invalid_args"][0]["Field"]
 
+		assert.Equal(t, 1, len(actualResp["invalid_args"]))
 		assert.Equal(t, expectCode, recorder.Code)
 		assert.Equal(t, "Password", actualFieldErr)
 		userService.AssertNotCalled(t, "SignUp")
 
-		postBody, _ = json.Marshal(user2)
+		postBody, _ = json.Marshal(map[string]string{
+			"user_name": user2.UserName,
+			"email":     user2.Email,
+			"Password":  user2.Password,
+		})
 		request, err = http.NewRequest(
 			http.MethodPost,
 			baseURL+"/signup",
@@ -241,14 +274,15 @@ func TestSignUp(t *testing.T) {
 		expectCode = http.StatusBadRequest
 		err = json.Unmarshal(recorder.Body.Bytes(), &actualResp)
 		actualFieldErr = actualResp["invalid_args"][0]["Field"]
-
+        
+		assert.Equal(t, 1, len(actualResp["invalid_args"]))
 		assert.Equal(t, expectCode, recorder.Code)
 		assert.Equal(t, "Password", actualFieldErr)
 		userService.AssertNotCalled(t, "SignUp")
 	})
 
 	t.Run("SignUp internal error", func(t *testing.T) {
-		user1 := &model.User{
+		user := &model.User{
 			UserName: "AAAAA",
 			Email:    "333@g.com",
 			Password: "123456",
@@ -266,7 +300,11 @@ func TestSignUp(t *testing.T) {
 			UserService: userService,
 		})
 
-		postBody, _ := json.Marshal(user1)
+		postBody, _ := json.Marshal(map[string]string{
+			"user_name": user.UserName,
+			"email":     user.Email,
+			"Password":  user.Password,
+		})
 		request, err := http.NewRequest(
 			http.MethodPost,
 			baseURL+"/signup",
@@ -305,7 +343,11 @@ func TestSignUp(t *testing.T) {
 			TokenService: tokenService,
 		})
 
-		postBody, _ := json.Marshal(user)
+		postBody, _ := json.Marshal(map[string]string{
+			"user_name": user.UserName,
+			"email":     user.Email,
+			"Password":  user.Password,
+		})
 		request, err := http.NewRequest(
 			http.MethodPost,
 			baseURL+"/signup",
@@ -320,6 +362,6 @@ func TestSignUp(t *testing.T) {
 
 		assert.Equal(t, expectCode, recorder.Code)
 		userService.AssertExpectations(t)
-		tokenService.AssertNotCalled(t, "CreatePairFromUser")
+		tokenService.AssertExpectations(t)
 	})
 }

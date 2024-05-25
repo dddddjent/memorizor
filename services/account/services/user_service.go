@@ -35,8 +35,6 @@ func (service *SUserService) SignUp(user *model.User) error {
 	}
 
 	user.Password = encoded
-	id, _ := uuid.NewV7()
-	user.UUID = id
 	if err := service.repository.Create(user); err != nil {
 		return err
 	}

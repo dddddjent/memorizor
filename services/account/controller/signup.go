@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"memorizor/services/account/controller/validate"
 	"memorizor/services/account/model"
 	"memorizor/services/account/util"
@@ -21,7 +20,6 @@ func (ctrl *Controller) signup(c *gin.Context) {
 	if validate.ShouldBindOrBadRequest(c, body) == false {
 		return
 	}
-	log.Println("Post validated")
 
 	user := &model.User{
 		UserName: body.UserName,
@@ -48,6 +46,6 @@ func (ctrl *Controller) signup(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"tokens": tokenPair,
+		"token_pair": tokenPair,
 	})
 }
