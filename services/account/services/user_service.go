@@ -8,7 +8,7 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-type SUserService struct {
+type sUserService struct {
 	repository repository.IUserRepository
 }
 
@@ -17,15 +17,15 @@ type SUserServiceConfig struct {
 }
 
 func NewSUserService(config *SUserServiceConfig) IUserService {
-	return &SUserService{
+	return &sUserService{
 		repository: config.Repository,
 	}
 }
 
-func (service *SUserService) GetByUUID(id uuid.UUID) (*model.User, error) {
+func (service *sUserService) GetByUUID(id uuid.UUID) (*model.User, error) {
 	return service.repository.FindByUUID(id)
 }
-func (service *SUserService) SignUp(user *model.User) error {
+func (service *sUserService) SignUp(user *model.User) error {
 	encoded, err := util.EncodePassword(user.Password)
 	if err != nil {
 		return &util.Error{

@@ -10,11 +10,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type SUserRepositoryPG struct {
+type sUserRepositoryPG struct {
 	db *gorm.DB
 }
 
-func NewSUserRepositoryPG() *SUserRepositoryPG {
+func NewSUserRepositoryPG() IUserRepository {
 	dsn := "host=" + os.Getenv("POSTGRES_HOST") +
 		" user=" + os.Getenv("POSTGRES_USER") +
 		" password=" + os.Getenv("POSTGRES_PASSWORD") +
@@ -25,10 +25,10 @@ func NewSUserRepositoryPG() *SUserRepositoryPG {
 		panic("Can't connect to Postgres")
 	}
 	db.AutoMigrate(&model.User{})
-	return &SUserRepositoryPG{db}
+	return &sUserRepositoryPG{db}
 }
 
-func (r *SUserRepositoryPG) Create(user *model.User) error {
+func (r *sUserRepositoryPG) Create(user *model.User) error {
 	cnt := int64(0)
 	r.db.Model(&model.User{}).Where("user_name= ?", user.UserName).Count(&cnt)
 	if cnt == 1 {
@@ -43,7 +43,7 @@ func (r *SUserRepositoryPG) Create(user *model.User) error {
 	return nil
 }
 
-func (r *SUserRepositoryPG) FindByUUID(id uuid.UUID) (*model.User, error) {
+func (r *sUserRepositoryPG) FindByUUID(id uuid.UUID) (*model.User, error) {
 	user := &model.User{}
 	r.db.Where("uuid = ?", id).First(user)
 	if *user == *new(model.User) {

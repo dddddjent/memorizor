@@ -9,9 +9,9 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateIDToken(user *model.User, key *rsa.PrivateKey) (string, error) {
+func GenerateIDToken(user *model.User, key *rsa.PrivateKey, timeout int64) (string, error) {
 	unixTime := time.Now().Unix()
-	expireTime := unixTime + 60*15 // 15 mins
+	expireTime := unixTime + timeout // 15 mins
 	t := jwt.NewWithClaims(jwt.SigningMethodRS256,
 		jwt.MapClaims{
 			"iat":  unixTime,
@@ -31,9 +31,9 @@ type SRefreshToken struct {
 	ExpiresIn   time.Duration
 }
 
-func GenerateRefreshToken(id uuid.UUID, secret string) (*SRefreshToken, error) {
+func GenerateRefreshToken(id uuid.UUID, secret string, timeout int64) (*SRefreshToken, error) {
 	currentTime := time.Now()
-	tokenExpireTime := currentTime.AddDate(0, 0, 3)
+	tokenExpireTime := currentTime.Add(time.Duration(timeout) * time.Second)
 	tokenID, err := uuid.NewV4()
 	if err != nil {
 		return nil, err

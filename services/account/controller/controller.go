@@ -3,12 +3,11 @@ package controller
 import (
 	"memorizor/services/account/services"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
-type Controller struct {
+type sController struct {
 	router       *gin.Engine
 	userService  services.IUserService
 	tokenService services.ITokenService
@@ -18,15 +17,16 @@ type Config struct {
 	Router       *gin.Engine
 	UserService  services.IUserService
 	TokenService services.ITokenService
+	BaseURL      string
 }
 
-func NewController(config *Config) *Controller {
-	ctrl := &Controller{
+func NewController(config *Config) *sController {
+	ctrl := &sController{
 		router:       config.Router,
 		userService:  config.UserService,
 		tokenService: config.TokenService,
 	}
-	group := ctrl.router.Group(os.Getenv("ACCOUNT_API_URL"))
+	group := ctrl.router.Group(config.BaseURL)
 
 	group.GET("/me", ctrl.me)
 	group.POST("/signup", ctrl.signup)
@@ -39,35 +39,35 @@ func NewController(config *Config) *Controller {
 	return ctrl
 }
 
-func (ctrl *Controller) Run(addr string) {
+func (ctrl *sController) Run(addr string) {
 	ctrl.router.Run(addr)
 }
 
-func (ctrl *Controller) signin(c *gin.Context) {
+func (ctrl *sController) signin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "signin",
 	})
 }
 
-func (ctrl *Controller) signout(c *gin.Context) {
+func (ctrl *sController) signout(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "signout",
 	})
 }
 
-func (ctrl *Controller) tokens(c *gin.Context) {
+func (ctrl *sController) tokens(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "tokens",
 	})
 }
 
-func (ctrl *Controller) image(c *gin.Context) {
+func (ctrl *sController) image(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "image",
 	})
 }
 
-func (ctrl *Controller) details(c *gin.Context) {
+func (ctrl *sController) details(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "details",
 	})

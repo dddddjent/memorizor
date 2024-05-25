@@ -13,6 +13,7 @@ const (
 	Internal              Type = "INTERNAL"
 	NotFound              Type = "NOTFOUND"
 	RequestEntityTooLarge Type = "REQUESTENTITYTOOLARGE"
+	UnsupportedMediaType  Type = "UNSUPPORTEDMEDIATYPE"
 )
 
 type Error struct {
@@ -38,6 +39,8 @@ func (e *Error) HttpStatus() int {
 		return http.StatusNotFound
 	case RequestEntityTooLarge:
 		return http.StatusRequestEntityTooLarge
+	case UnsupportedMediaType:
+		return http.StatusUnsupportedMediaType
 	default:
 		return http.StatusInternalServerError
 	}

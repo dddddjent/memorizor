@@ -15,9 +15,9 @@ type signUpBody struct {
 	Password string `json:"password" binding:"required,gte=6,lte=10"`
 }
 
-func (ctrl *Controller) signup(c *gin.Context) {
+func (ctrl *sController) signup(c *gin.Context) {
 	body := &signUpBody{}
-	if validate.ShouldBindOrBadRequest(c, body) == false {
+	if validate.ShouldBindJSONOrBadRequest(c, body) == false {
 		return
 	}
 

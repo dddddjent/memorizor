@@ -8,7 +8,7 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-func (ctrl *Controller) me(c *gin.Context) {
+func (ctrl *sController) me(c *gin.Context) {
 	var id uuid.UUID
 	if err := id.Parse(c.Query("uuid")); err != nil {
 		err := util.Error{Type: util.BadRequest, Message: "Can't parse uuid"}

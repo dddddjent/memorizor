@@ -1,6 +1,7 @@
 package validate
 
 import (
+	"fmt"
 	"memorizor/services/account/util"
 
 	"github.com/gin-gonic/gin"
@@ -14,7 +15,18 @@ type InvalidArg struct {
 	Param string
 }
 
-func ShouldBindOrBadRequest(c *gin.Context, data any) bool {
+func ShouldBindJSONOrBadRequest(c *gin.Context, data any) bool {
+	if c.ContentType() != "application/json" {
+		msg := fmt.Sprintf("%s only accepts application/json", c.FullPath())
+		err := &util.Error{
+			Type:    util.UnsupportedMediaType,
+			Message: msg,
+		}
+		c.JSON(err.HttpStatus(), gin.H{
+			"error": err,
+		})
+		return false
+	}
 	if err := c.ShouldBind(data); err != nil {
 		if errs, ok := err.(validator.ValidationErrors); ok {
 			invalidArgs := []InvalidArg{}

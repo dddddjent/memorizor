@@ -26,11 +26,15 @@ func TestCreatePairFromUser(t *testing.T) {
 	}
 	publicKey, _ := jwt.ParseRSAPublicKeyFromPEM(publicKeyBytes)
 	secret := "A secret"
+	idTimeOut := 900
+	refreshTimeOut := 259200
 
 	tokenService := services.NewSTokenService(&services.STokenServiceConfig{
-		PrivateKey:    privateKey,
-		PublicKey:     publicKey,
-		RefreshSecret: secret,
+		PrivateKey:          privateKey,
+		PublicKey:           publicKey,
+		RefreshSecret:       secret,
+		IdTokenTimeout:      int64(idTimeOut),
+		RefreshTokenTimeout: int64(refreshTimeOut),
 	})
 
 	id, _ := uuid.NewV4()
@@ -62,7 +66,7 @@ func TestCreatePairFromUser(t *testing.T) {
 
 		// time issue
 		actualExpire := time.Unix(int64(parsedClaims["exp"].(float64)), 0)
-		expectedExpire := time.Now().Add(15 * time.Minute)
+		expectedExpire := time.Now().Add(time.Duration(idTimeOut) * time.Second)
 		assert.WithinDuration(t, actualExpire, expectedExpire, 5*time.Second) // this and create pair should be within 5s
 
 		// RefreshToken
@@ -75,5 +79,9 @@ func TestCreatePairFromUser(t *testing.T) {
 		_, ok := parsedClaims["token_id"].(string)
 		assert.True(t, ok)
 		assert.Equal(t, actualUUIDString, user.UUID.String())
+
+		actualExpire = time.Unix(int64(parsedClaims["exp"].(float64)), 0)
+		expectedExpire = time.Now().Add(time.Duration(refreshTimeOut) * time.Second)
+		assert.WithinDuration(t, actualExpire, expectedExpire, 5*time.Second) // this and create pair should be within 5s
 	})
 }
