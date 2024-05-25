@@ -78,10 +78,12 @@ func ConfigureRouter(r *gin.Engine) {
 		RefreshTokenTimeout: refreshTimeout,
 	})
 
+	requestTimeout, _ := strconv.ParseInt(os.Getenv("REQUEST_TIMEOUT"), 10, 64)
 	controller.NewController(&controller.Config{
 		Router:       r,
 		UserService:  userService,
 		TokenService: tokenService,
 		BaseURL:      os.Getenv("ACCOUNT_API_URL"),
+		Timeout:      requestTimeout,
 	})
 }

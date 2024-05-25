@@ -1,8 +1,11 @@
 package controller
 
 import (
+	"memorizor/services/account/controller/middleware"
 	"memorizor/services/account/services"
+	"memorizor/services/account/util"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,6 +21,7 @@ type Config struct {
 	UserService  services.IUserService
 	TokenService services.ITokenService
 	BaseURL      string
+	Timeout      int64
 }
 
 func NewController(config *Config) *sController {
@@ -26,7 +30,10 @@ func NewController(config *Config) *sController {
 		userService:  config.UserService,
 		tokenService: config.TokenService,
 	}
+
+	timeoutDuration := time.Duration(config.Timeout) * time.Second
 	group := ctrl.router.Group(config.BaseURL)
+	group.Use(middleware.Timeout(timeoutDuration, util.NewServiceUnavailable()))
 
 	group.GET("/me", ctrl.me)
 	group.POST("/signup", ctrl.signup)
