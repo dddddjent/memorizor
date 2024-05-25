@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"memorizor/services/account/controller"
+	"memorizor/services/account/model"
 	"memorizor/services/account/repository"
 	"memorizor/services/account/services"
 	"os"
@@ -10,11 +11,32 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
+func generateDataSources() map[string]any {
+	dsn := "host=" + os.Getenv("POSTGRES_HOST") +
+		" user=" + os.Getenv("POSTGRES_USER") +
+		" password=" + os.Getenv("POSTGRES_PASSWORD") +
+		" dbname=" + os.Getenv("POSTGRES_DATABASE") +
+		" port=" + os.Getenv("POSTGRES_PORT")
+	postgresDB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic("Can't connect to Postgres")
+	}
+	postgresDB.AutoMigrate(&model.User{})
+
+	return map[string]any{
+		"postgres": postgresDB,
+	}
+}
+
 func ConfigureRouter(r *gin.Engine) {
+	dataSources := generateDataSources()
+
 	userService := services.NewSUserService(&services.SUserServiceConfig{
-		Repository: repository.NewSUserRepositoryPG(),
+		Repository: repository.NewSUserRepositoryPG(dataSources["postgres"].(*gorm.DB)),
 	})
 
 	privateKeyBytes, err := os.ReadFile("/keys/" + os.Getenv("RSA_PRIVATE_KEY_FILE"))
