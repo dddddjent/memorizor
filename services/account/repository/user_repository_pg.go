@@ -15,10 +15,11 @@ type SUserRepositoryPG struct {
 }
 
 func NewSUserRepositoryPG() *SUserRepositoryPG {
-	dsn :=
-		"host=postgres-users user=" + os.Getenv("POSTGRES_USER") +
-			" password=" + os.Getenv("POSTGRES_PASSWORD") +
-			" dbname=administrator port=5432"
+	dsn := "host=" + os.Getenv("POSTGRES_HOST") +
+		" user=" + os.Getenv("POSTGRES_USER") +
+		" password=" + os.Getenv("POSTGRES_PASSWORD") +
+		" dbname=" + os.Getenv("POSTGRES_DATABASE") +
+		" port=" + os.Getenv("POSTGRES_PORT")
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("Can't connect to Postgres")

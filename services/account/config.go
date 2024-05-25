@@ -16,12 +16,12 @@ func ConfigureRouter(r *gin.Engine) {
 		Repository: repository.NewSUserRepositoryPG(),
 	})
 
-	privateKeyBytes, err := os.ReadFile("/keys/" + os.Getenv("RSA_PRIVATE_KEY_NAME") + ".pem")
+	privateKeyBytes, err := os.ReadFile("/keys/" + os.Getenv("RSA_PRIVATE_KEY_FILE"))
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 	privateKey, _ := jwt.ParseRSAPrivateKeyFromPEM(privateKeyBytes)
-	publicKeyBytes, err := os.ReadFile("/keys/" + os.Getenv("RSA_PUBLIC_KEY_NAME") + ".pem")
+	publicKeyBytes, err := os.ReadFile("/keys/" + os.Getenv("RSA_PUBLIC_KEY_FILE"))
 	if err != nil {
 		log.Fatal(err.Error())
 	}

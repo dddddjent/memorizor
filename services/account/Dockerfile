@@ -1,6 +1,8 @@
 FROM golang:alpine as compiler
 WORKDIR /src
 
+COPY ./keys/* /keys/
+
 RUN go env -w  GOPROXY=https://goproxy.cn,direct 
 RUN go install github.com/cespare/reflex@latest
 
