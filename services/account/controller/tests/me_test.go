@@ -3,9 +3,9 @@ package controller_test
 import (
 	"encoding/json"
 	"memorizor/services/account/controller"
-	"memorizor/services/account/util"
 	"memorizor/services/account/model"
 	"memorizor/services/account/services/mocks"
+	"memorizor/services/account/util"
 	"net/http"
 	"net/http/httptest"
 	"os"

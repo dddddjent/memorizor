@@ -18,10 +18,7 @@ type InvalidArg struct {
 func ShouldBindJSONOrBadRequest(c *gin.Context, data any) bool {
 	if c.ContentType() != "application/json" {
 		msg := fmt.Sprintf("%s only accepts application/json", c.FullPath())
-		err := &util.Error{
-			Type:    util.UnsupportedMediaType,
-			Message: msg,
-		}
+		err := util.NewUnsupportedMediaType(msg)
 		c.JSON(err.HttpStatus(), gin.H{
 			"error": err,
 		})

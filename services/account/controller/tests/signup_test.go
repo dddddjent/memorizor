@@ -288,10 +288,7 @@ func TestSignUp(t *testing.T) {
 			Password: "123456",
 		}
 		userService := &services.SMockUserService{}
-		expectErr := &util.Error{
-			Type:    util.Internal,
-			Message: "No",
-		}
+        expectErr := util.NewInternal("No")
 		userService.On("SignUp", mock.AnythingOfType("*model.User")).Return(expectErr)
 
 		r := gin.Default()
@@ -327,10 +324,7 @@ func TestSignUp(t *testing.T) {
 			Email:    "333@g.com",
 			Password: "123456",
 		}
-		expectErr := &util.Error{
-			Type:    util.Internal,
-			Message: "No",
-		}
+        expectErr := util.NewInternal("No")
 		userService := &services.SMockUserService{}
 		userService.On("SignUp", mock.AnythingOfType("*model.User")).Return(nil)
 		tokenService := &services.SMockTokenService{}

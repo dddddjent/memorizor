@@ -26,10 +26,7 @@ func (r *sTokenRepository) SetRefreshToken(userID, tokenID string, expiresIn tim
 	key := fmt.Sprintf("%s:%s", userID, tokenID)
 	if err := r.rdb.Set(r.ctx, key, 0, expiresIn).Err(); err != nil {
 		log.Println(err.Error())
-		return &util.Error{
-			Type:    util.Internal,
-			Message: "Could not set the refresh token",
-		}
+        return util.NewInternal("Could not set the refresh token")
 	}
 	return nil
 }
@@ -37,10 +34,7 @@ func (r *sTokenRepository) DeleteRefreshToken(userID, previousTokenID string) er
 	key := fmt.Sprintf("%s:%s", userID, previousTokenID)
 	if err := r.rdb.Del(r.ctx, key).Err(); err != nil {
 		log.Println(err.Error())
-		return &util.Error{
-			Type:    util.Internal,
-			Message: "Could not delete the previous refresh token",
-		}
+        return util.NewInternal("Could not delete the previous refresh token")
 	}
 	return nil
 }

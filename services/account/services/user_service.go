@@ -28,10 +28,7 @@ func (service *sUserService) GetByUUID(id uuid.UUID) (*model.User, error) {
 func (service *sUserService) SignUp(user *model.User) error {
 	encoded, err := util.EncodePassword(user.Password)
 	if err != nil {
-		return &util.Error{
-			Type:    util.Internal,
-			Message: "Failed to encode password\n" + err.Error(),
-		}
+		return util.NewInternal("Failed to encode password\n" + err.Error())
 	}
 
 	user.Password = encoded

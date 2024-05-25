@@ -38,32 +38,26 @@ func NewSTokenService(config *STokenServiceConfig) ITokenService {
 func (s *sTokenService) CreatePairFromUser(user *model.User, prevToken string) (*model.TokenPair, error) {
 	idToken, err := util.GenerateIDToken(user, s.privateKey, s.idTokenTimeout)
 	if err != nil {
-		return nil, &util.Error{Type: util.Internal, Message: "Could not generate id token"}
+		return nil, util.NewInternal("Could not generate id token")
 	}
 
 	refreshToken, err := util.GenerateRefreshToken(user.UUID, s.refreshSecret, s.refreshTokenTimeout)
 	if err != nil {
-		return nil, &util.Error{Type: util.Internal, Message: "Could not generate refresh token"}
+		return nil, util.NewInternal("Could not generate refresh token")
 	}
 
 	if err := s.tokenRepository.SetRefreshToken(user.UUID.String(), refreshToken.ID, refreshToken.ExpiresIn); err != nil {
 		if err, ok := err.(*util.Error); ok {
 			return nil, err
 		}
-		return nil, &util.Error{
-			Type:    util.Internal,
-			Message: "Unable to set refresh token.\n" + err.Error(),
-		}
+		return nil, util.NewInternal("Unable to set refresh token.\n" + err.Error())
 	}
 	if prevToken != "" {
 		if err := s.tokenRepository.DeleteRefreshToken(user.UUID.String(), prevToken); err != nil {
 			if err, ok := err.(*util.Error); ok {
 				return nil, err
 			}
-			return nil, &util.Error{
-				Type:    util.Internal,
-				Message: "Unable to delete previous token.\n" + err.Error(),
-			}
+			return nil, util.NewInternal("Unable to delete previous token.\n" + err.Error())
 		}
 	}
 
