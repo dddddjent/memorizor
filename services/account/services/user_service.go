@@ -66,6 +66,6 @@ func (service *sUserService) SignIn(user *model.User) error {
 	if compareResult == false {
 		return util.NewAuthorization("Incorrect password")
 	}
-	userFound.DeepCopyTo(user)
+	*user = *userFound
 	return nil
 }
