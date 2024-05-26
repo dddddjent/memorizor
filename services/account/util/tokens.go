@@ -2,6 +2,7 @@ package util
 
 import (
 	"crypto/rsa"
+	"fmt"
 	"memorizor/services/account/model"
 	"time"
 
@@ -9,7 +10,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateIDToken(user *model.User, key *rsa.PrivateKey, timeout int64) (string, error) {
+func GenerateAccessToken(user *model.User, key *rsa.PrivateKey, timeout int64) (string, error) {
 	unixTime := time.Now().Unix()
 	expireTime := unixTime + timeout // 15 mins
 	t := jwt.NewWithClaims(jwt.SigningMethodRS256,
@@ -23,6 +24,20 @@ func GenerateIDToken(user *model.User, key *rsa.PrivateKey, timeout int64) (stri
 		return "", err
 	}
 	return tokenString, nil
+}
+
+func validateAccessToken(tokenString string, key *rsa.PublicKey) (*jwt.MapClaims, error) {
+	parsedClaims := make(jwt.MapClaims)
+	token, err := jwt.ParseWithClaims(tokenString, &parsedClaims, func(t *jwt.Token) (any, error) {
+		return key, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if !token.Valid {
+		return nil, fmt.Errorf("Access token is invalid")
+	}
+	return &parsedClaims, nil
 }
 
 type SRefreshToken struct {

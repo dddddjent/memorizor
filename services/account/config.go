@@ -67,14 +67,14 @@ func ConfigureRouter(r *gin.Engine) {
 	}
 	publicKey, _ := jwt.ParseRSAPublicKeyFromPEM(publicKeyBytes)
 	refreshSecret := os.Getenv("HS_REFRESH_SECRET")
-	idTimeout, err := strconv.ParseInt(os.Getenv("ID_TOKEN_TIMEOUT"), 10, 64)
+	idTimeout, err := strconv.ParseInt(os.Getenv("ACCESS_TOKEN_TIMEOUT"), 10, 64)
 	refreshTimeout, err := strconv.ParseInt(os.Getenv("REFRESH_TOKEN_TIMEOUT"), 10, 64)
 	tokenService := services.NewSTokenService(&services.STokenServiceConfig{
 		TokenRepository:     tokenRepository,
 		PrivateKey:          privateKey,
 		PublicKey:           publicKey,
 		RefreshSecret:       refreshSecret,
-		IdTokenTimeout:      idTimeout,
+		AccessTokenTimeout:      idTimeout,
 		RefreshTokenTimeout: refreshTimeout,
 	})
 

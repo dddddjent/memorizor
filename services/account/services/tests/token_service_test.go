@@ -52,7 +52,7 @@ func TestCreatePairFromUser(t *testing.T) {
 		PrivateKey:          privateKey,
 		PublicKey:           publicKey,
 		RefreshSecret:       secret,
-		IdTokenTimeout:      int64(idTimeOut),
+		AccessTokenTimeout:      int64(idTimeOut),
 		RefreshTokenTimeout: int64(refreshTimeOut),
 	})
 
@@ -60,9 +60,9 @@ func TestCreatePairFromUser(t *testing.T) {
 		tokenPair, err := tokenService.CreatePairFromUser(user, "a previous token")
 		assert.NoError(t, err)
 
-		// IDToken
+		// AccessToken
 		parsedClaims := make(jwt.MapClaims)
-		_, err = jwt.ParseWithClaims(tokenPair.IDToken, &parsedClaims, func(t *jwt.Token) (any, error) {
+		_, err = jwt.ParseWithClaims(tokenPair.AccessToken, &parsedClaims, func(t *jwt.Token) (any, error) {
 			return publicKey, nil
 		})
 		assert.NoError(t, err)

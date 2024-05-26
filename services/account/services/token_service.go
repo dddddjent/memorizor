@@ -12,7 +12,7 @@ type sTokenService struct {
 	privateKey          *rsa.PrivateKey
 	publicKey           *rsa.PublicKey
 	refreshSecret       string
-	idTokenTimeout      int64
+	accessTokenTimeout      int64
 	refreshTokenTimeout int64
 }
 type STokenServiceConfig struct {
@@ -20,7 +20,7 @@ type STokenServiceConfig struct {
 	PrivateKey          *rsa.PrivateKey
 	PublicKey           *rsa.PublicKey
 	RefreshSecret       string
-	IdTokenTimeout      int64
+	AccessTokenTimeout      int64
 	RefreshTokenTimeout int64
 }
 
@@ -30,15 +30,15 @@ func NewSTokenService(config *STokenServiceConfig) ITokenService {
 		privateKey:          config.PrivateKey,
 		publicKey:           config.PublicKey,
 		refreshSecret:       config.RefreshSecret,
-		idTokenTimeout:      config.IdTokenTimeout,
+		accessTokenTimeout:      config.AccessTokenTimeout,
 		refreshTokenTimeout: config.RefreshTokenTimeout,
 	}
 }
 
 func (s *sTokenService) CreatePairFromUser(user *model.User, prevToken string) (*model.TokenPair, error) {
-	idToken, err := util.GenerateIDToken(user, s.privateKey, s.idTokenTimeout)
+	accessToken, err := util.GenerateAccessToken(user, s.privateKey, s.accessTokenTimeout)
 	if err != nil {
-		return nil, util.NewInternal("Could not generate id token")
+		return nil, util.NewInternal("Could not generate access token")
 	}
 
 	refreshToken, err := util.GenerateRefreshToken(user.UUID, s.refreshSecret, s.refreshTokenTimeout)
@@ -62,7 +62,7 @@ func (s *sTokenService) CreatePairFromUser(user *model.User, prevToken string) (
 	}
 
 	return &model.TokenPair{
-		IDToken:      idToken,
+		AccessToken:      accessToken,
 		RefreshToken: refreshToken.TokenString,
 	}, nil
 }

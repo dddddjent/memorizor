@@ -28,7 +28,7 @@ func TestSignUp(t *testing.T) {
 			Password: "123456",
 		}
 		tokenPair := &model.TokenPair{
-			IDToken:      "123",
+			AccessToken:      "123",
 			RefreshToken: "1222",
 		}
 		userService := &services.SMockUserService{}
