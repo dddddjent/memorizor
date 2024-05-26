@@ -28,3 +28,22 @@ func (s *SMockTokenService) CreatePairFromUser(user *model.User, prevToken strin
 	}
 	return token, nil
 }
+
+func (s *SMockTokenService) ValidateAccessToken(tokenString string) (*model.User, error) {
+	args := s.Called(tokenString)
+
+	arg0 := args.Get(0)
+	var user *model.User
+	if arg0 != nil {
+		user = arg0.(*model.User)
+	}
+	err := args.Get(1)
+	if err != nil {
+		err, ok := err.(error)
+		if !ok {
+			panic("Could not cast arg 1 to err")
+		}
+		return user, err
+	}
+	return user, nil
+}

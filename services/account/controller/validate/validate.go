@@ -58,3 +58,39 @@ func ShouldBindJSONOrBadRequest(c *gin.Context, data any) bool {
 	}
 	return true
 }
+
+func ShouldBindHeaderOrBadRequest(c *gin.Context, data any) bool {
+	if err := c.ShouldBindHeader(data); err != nil {
+		if errs, ok := err.(validator.ValidationErrors); ok {
+			invalidArgs := []InvalidArg{}
+
+			for _, err := range errs {
+				invalidArgs = append(invalidArgs, InvalidArg{
+					err.Field(),
+					err.Value().(string),
+					err.Tag(),
+					err.Param(),
+				})
+			}
+			err := util.Error{
+				Type:    util.BadRequestError,
+				Message: "See invalid args for details",
+			}
+			c.JSON(err.HttpStatus(), gin.H{
+				"error":        err,
+				"invalid_args": invalidArgs,
+			})
+			return false
+		}
+
+		err := util.Error{
+			Type:    util.InternalError,
+			Message: "Internal error",
+		}
+		c.JSON(err.HttpStatus(), gin.H{
+			"error": err,
+		})
+		return false
+	}
+	return true
+}

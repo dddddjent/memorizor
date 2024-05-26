@@ -3,9 +3,9 @@ package controller
 import (
 	"memorizor/services/account/controller/middleware"
 	"memorizor/services/account/services"
-	"memorizor/services/account/util"
+	// "memorizor/services/account/util"
 	"net/http"
-	"time"
+	// "time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,25 +31,31 @@ func NewController(config *Config) *sController {
 		tokenService: config.TokenService,
 	}
 
-	timeoutDuration := time.Duration(config.Timeout) * time.Second
-	group := ctrl.router.Group(config.BaseURL)
+	rootGroup := ctrl.router.Group(config.BaseURL)
+	// timeoutDuration := time.Duration(config.Timeout) * time.Second
 	if gin.Mode() != gin.TestMode {
-		group.Use(middleware.Timeout(timeoutDuration, util.NewServiceUnavailable()))
+		// rootGroup.Use(middleware.Timeout(timeoutDuration, util.NewServiceUnavailable()))
 	}
 
-	group.GET("/me", ctrl.me)
-	group.POST("/signup", ctrl.signup)
-	group.POST("/signin", ctrl.signin)
-	group.POST("/signout", ctrl.signout)
-	group.POST("/tokens", ctrl.tokens)
-	group.POST("/image", ctrl.image)
-	group.POST("/details", ctrl.details)
+	group := rootGroup.Group(".")
+	{
+		group.POST("/signup", ctrl.signup)
+		group.POST("/signin", ctrl.signin)
+		group.POST("/signout", ctrl.signout)
+		group.POST("/tokens", ctrl.tokens)
+		group.POST("/image", ctrl.image)
+		group.POST("/details", ctrl.details)
+	}
+
+	authGroup := rootGroup.Group(".")
+	if gin.Mode() != gin.TestMode {
+		authGroup.Use(middleware.AuthUser(ctrl.tokenService))
+	}
+	{
+		authGroup.GET("/me", ctrl.me)
+	}
 
 	return ctrl
-}
-
-func (ctrl *sController) Run(addr string) {
-	ctrl.router.Run(addr)
 }
 
 func (ctrl *sController) signout(c *gin.Context) {

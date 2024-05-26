@@ -11,4 +11,5 @@ type IUserService interface {
 
 type ITokenService interface {
 	CreatePairFromUser(user *model.User, prevToken string) (*model.TokenPair, error)
+	ValidateAccessToken(tokenString string) (*model.User, error)
 }

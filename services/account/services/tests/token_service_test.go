@@ -1,12 +1,12 @@
 package services_test
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"memorizor/services/account/model"
 	mockRepo "memorizor/services/account/repository/mocks"
 	"memorizor/services/account/services"
+	"memorizor/services/account/util"
 	"os"
 	"testing"
 	"time"
@@ -52,7 +52,7 @@ func TestCreatePairFromUser(t *testing.T) {
 		PrivateKey:          privateKey,
 		PublicKey:           publicKey,
 		RefreshSecret:       secret,
-		AccessTokenTimeout:      int64(idTimeOut),
+		AccessTokenTimeout:  int64(idTimeOut),
 		RefreshTokenTimeout: int64(refreshTimeOut),
 	})
 
@@ -61,39 +61,34 @@ func TestCreatePairFromUser(t *testing.T) {
 		assert.NoError(t, err)
 
 		// AccessToken
-		parsedClaims := make(jwt.MapClaims)
-		_, err = jwt.ParseWithClaims(tokenPair.AccessToken, &parsedClaims, func(t *jwt.Token) (any, error) {
+		accessClaims := util.AccessTokenClaims{}
+		_, err = jwt.ParseWithClaims(tokenPair.AccessToken, &accessClaims, func(t *jwt.Token) (any, error) {
 			return publicKey, nil
 		})
 		assert.NoError(t, err)
 
-		parsedUserBytes, err := json.Marshal(parsedClaims["user"])
-		assert.NoError(t, err)
-		actualUser := &model.User{}
-		err = json.Unmarshal(parsedUserBytes, actualUser)
-		assert.NoError(t, err)
+		actualUser := accessClaims.User
 
 		// same user
 		assert.Equal(t, user, actualUser)
 		assert.Empty(t, actualUser.Password)
 
 		// time issue
-		actualExpire := time.Unix(int64(parsedClaims["exp"].(float64)), 0)
+		actualExpire := time.Unix(accessClaims.ExpiresAt.Unix(), 0)
 		expectedExpire := time.Now().Add(time.Duration(idTimeOut) * time.Second)
 		assert.WithinDuration(t, actualExpire, expectedExpire, 5*time.Second) // this and create pair should be within 5s
 
 		// RefreshToken
-		_, err = jwt.ParseWithClaims(tokenPair.RefreshToken, &parsedClaims, func(t *jwt.Token) (any, error) {
+		refreshClaims := util.RefreshTokenClaims{}
+		_, err = jwt.ParseWithClaims(tokenPair.RefreshToken, &refreshClaims, func(t *jwt.Token) (any, error) {
 			return []byte(secret), nil
 		})
 		assert.NoError(t, err)
 
-		actualUUIDString := parsedClaims["uuid"].(string)
-		_, ok := parsedClaims["token_id"].(string)
-		assert.True(t, ok)
+		actualUUIDString := refreshClaims.UUID
 		assert.Equal(t, actualUUIDString, user.UUID.String())
 
-		actualExpire = time.Unix(int64(parsedClaims["exp"].(float64)), 0)
+		actualExpire = time.Unix(refreshClaims.ExpiresAt.Unix(), 0)
 		expectedExpire = time.Now().Add(time.Duration(refreshTimeOut) * time.Second)
 		assert.WithinDuration(t, actualExpire, expectedExpire, 5*time.Second) // this and create pair should be within 5s
 	})

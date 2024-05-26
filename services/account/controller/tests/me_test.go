@@ -31,12 +31,15 @@ func TestMe(t *testing.T) {
 		userService.On("GetByUUID", id).Return(user, nil)
 
 		r := gin.Default()
+		r.Use(func(ctx *gin.Context) {
+			ctx.Set("user", user)
+		})
 		controller.NewController(&controller.Config{ // r on /me
 			Router:      r,
 			UserService: userService,
 		})
 
-		request, _ := http.NewRequest(http.MethodGet, baseURL+"/me?uuid="+id.String(), nil)
+		request, _ := http.NewRequest(http.MethodGet, baseURL+"/me", nil)
 		recorder := httptest.NewRecorder()
 		r.ServeHTTP(recorder, request)
 
@@ -50,21 +53,28 @@ func TestMe(t *testing.T) {
 		userService.AssertExpectations(t)
 	})
 	t.Run("BadRequest", func(t *testing.T) {
-		// mock the service
+		id, _ := uuid.NewV4()
+		user := &model.User{
+			UUID: id,
+			Name: "AAA",
+		}
 		userService := &services.SMockUserService{}
-		userService.On("GetByUUID", "1").Return(nil, nil)
+		userService.On("GetByUUID", user.UUID).Return(nil, nil)
 
 		r := gin.Default()
+		r.Use(func(ctx *gin.Context) {
+			// ctx.Set("user", user)
+		})
 		controller.NewController(&controller.Config{ // r on /me
 			Router:      r,
 			UserService: userService,
 		})
 
-		request, _ := http.NewRequest(http.MethodGet, baseURL+"/me?uuid=1", nil)
+		request, _ := http.NewRequest(http.MethodGet, baseURL+"/me", nil)
 		recorder := httptest.NewRecorder()
 		r.ServeHTTP(recorder, request)
 
-        err := util.NewBadRequest("Could not parse uuid")
+		err := util.NewBadRequest("No user info found in the request")
 		expectResponseBody, _ := json.Marshal(gin.H{
 			"error": err,
 		})
@@ -75,13 +85,19 @@ func TestMe(t *testing.T) {
 		userService.AssertNotCalled(t, "GetByUUID")
 	})
 	t.Run("NotFound", func(t *testing.T) {
-		// mock the service
 		id, _ := uuid.NewV4()
+		user := &model.User{
+			UUID: id,
+			Name: "AAA",
+		}
 		userService := &services.SMockUserService{}
 		err := &util.Error{Type: util.NotFoundError, Message: "Could not find the user"}
 		userService.On("GetByUUID", id).Return(nil, err)
 
 		r := gin.Default()
+		r.Use(func(ctx *gin.Context) {
+			ctx.Set("user", user)
+		})
 		controller.NewController(&controller.Config{ // r on /me
 			Router:      r,
 			UserService: userService,

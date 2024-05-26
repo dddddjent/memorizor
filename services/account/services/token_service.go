@@ -2,6 +2,7 @@ package services
 
 import (
 	"crypto/rsa"
+	"log"
 	"memorizor/services/account/model"
 	"memorizor/services/account/repository"
 	"memorizor/services/account/util"
@@ -12,7 +13,7 @@ type sTokenService struct {
 	privateKey          *rsa.PrivateKey
 	publicKey           *rsa.PublicKey
 	refreshSecret       string
-	accessTokenTimeout      int64
+	accessTokenTimeout  int64
 	refreshTokenTimeout int64
 }
 type STokenServiceConfig struct {
@@ -20,7 +21,7 @@ type STokenServiceConfig struct {
 	PrivateKey          *rsa.PrivateKey
 	PublicKey           *rsa.PublicKey
 	RefreshSecret       string
-	AccessTokenTimeout      int64
+	AccessTokenTimeout  int64
 	RefreshTokenTimeout int64
 }
 
@@ -30,7 +31,7 @@ func NewSTokenService(config *STokenServiceConfig) ITokenService {
 		privateKey:          config.PrivateKey,
 		publicKey:           config.PublicKey,
 		refreshSecret:       config.RefreshSecret,
-		accessTokenTimeout:      config.AccessTokenTimeout,
+		accessTokenTimeout:  config.AccessTokenTimeout,
 		refreshTokenTimeout: config.RefreshTokenTimeout,
 	}
 }
@@ -62,7 +63,19 @@ func (s *sTokenService) CreatePairFromUser(user *model.User, prevToken string) (
 	}
 
 	return &model.TokenPair{
-		AccessToken:      accessToken,
+		AccessToken:  accessToken,
 		RefreshToken: refreshToken.TokenString,
 	}, nil
+}
+
+func (s *sTokenService) ValidateAccessToken(tokenString string) (*model.User, error) {
+	claims, err := util.ValidateAccessToken(tokenString, s.publicKey)
+	if err != nil {
+		log.Println(err.Error())
+		log.Println("Could not get claims from the request")
+		return nil, util.NewAuthorization("Unable to verify user from the access token")
+	}
+	log.Println("claims: ", claims)
+	user := claims.User
+	return user, nil
 }

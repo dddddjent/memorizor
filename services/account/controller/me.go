@@ -1,22 +1,24 @@
 package controller
 
 import (
+	"memorizor/services/account/model"
 	"memorizor/services/account/util"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gofrs/uuid"
 )
 
 func (ctrl *sController) me(c *gin.Context) {
-	var id uuid.UUID
-	if err := id.Parse(c.Query("uuid")); err != nil {
-        err := util.NewBadRequest("Could not parse uuid")
+	userAny, exists := c.Get("user")
+	if !exists {
+		err := util.NewBadRequest("No user info found in the request")
 		c.JSON(err.HttpStatus(), gin.H{
 			"error": err,
 		})
 		return
 	}
+	user := userAny.(*model.User)
+	id := user.UUID
 	user, err := ctrl.userService.GetByUUID(id)
 	if err != nil {
 		err, _ := err.(*util.Error)

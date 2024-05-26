@@ -10,15 +10,22 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+type AccessTokenClaims struct {
+	jwt.RegisteredClaims
+	User *model.User `json:"user"`
+}
+
 func GenerateAccessToken(user *model.User, key *rsa.PrivateKey, timeout int64) (string, error) {
-	unixTime := time.Now().Unix()
-	expireTime := unixTime + timeout // 15 mins
-	t := jwt.NewWithClaims(jwt.SigningMethodRS256,
-		jwt.MapClaims{
-			"iat":  unixTime,
-			"exp":  expireTime,
-			"user": user,
-		})
+	unixTime := time.Now()
+	expireTime := unixTime.Add(time.Duration(timeout) * time.Second) // 15 mins
+	claims := AccessTokenClaims{
+		User: user,
+		RegisteredClaims: jwt.RegisteredClaims{
+			IssuedAt:  &jwt.NumericDate{Time: unixTime},
+			ExpiresAt: &jwt.NumericDate{Time: expireTime},
+		},
+	}
+	t := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 	tokenString, err := t.SignedString(key)
 	if err != nil {
 		return "", err
@@ -26,8 +33,8 @@ func GenerateAccessToken(user *model.User, key *rsa.PrivateKey, timeout int64) (
 	return tokenString, nil
 }
 
-func validateAccessToken(tokenString string, key *rsa.PublicKey) (*jwt.MapClaims, error) {
-	parsedClaims := make(jwt.MapClaims)
+func ValidateAccessToken(tokenString string, key *rsa.PublicKey) (*AccessTokenClaims, error) {
+	parsedClaims := AccessTokenClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, &parsedClaims, func(t *jwt.Token) (any, error) {
 		return key, nil
 	})
@@ -45,6 +52,11 @@ type SRefreshToken struct {
 	ID          string
 	ExpiresIn   time.Duration
 }
+type RefreshTokenClaims struct {
+	jwt.RegisteredClaims
+	UUID    string `json:"uuid"`
+	TokenId string `json:"token_id"`
+}
 
 func GenerateRefreshToken(id uuid.UUID, secret string, timeout int64) (*SRefreshToken, error) {
 	currentTime := time.Now()
@@ -53,14 +65,16 @@ func GenerateRefreshToken(id uuid.UUID, secret string, timeout int64) (*SRefresh
 	if err != nil {
 		return nil, err
 	}
-
-	t := jwt.NewWithClaims(jwt.SigningMethodHS256,
-		jwt.MapClaims{
-			"iat":      currentTime.Unix(),
-			"exp":      tokenExpireTime.Unix(),
-			"token_id": tokenID.String(),
-			"uuid":     id.String(),
-		})
+    
+	claims := RefreshTokenClaims{
+		UUID:    id.String(),
+		TokenId: tokenID.String(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			IssuedAt:  &jwt.NumericDate{Time: currentTime},
+			ExpiresAt: &jwt.NumericDate{Time: tokenExpireTime},
+		},
+	}
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := t.SignedString([]byte(secret))
 
 	if err != nil {

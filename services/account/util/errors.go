@@ -19,8 +19,8 @@ const (
 )
 
 type Error struct {
-	Type    ErrorType   `json:"type"`
-	Message string `json:"message"`
+	Type    ErrorType `json:"type"`
+	Message string    `json:"message"`
 }
 
 func (e *Error) Error() string {
@@ -88,7 +88,7 @@ func NewInternal(reason string) *Error {
 func NewNotFound(name, value string) *Error {
 	return &Error{
 		Type:    NotFoundError,
-		Message: fmt.Sprintf("Resource %v with value %v already exists", name, value),
+		Message: fmt.Sprintf("Resource %v with value %v not found", name, value),
 	}
 }
 
