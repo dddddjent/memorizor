@@ -5,21 +5,21 @@ import (
 	"net/http"
 )
 
-type Type string
+type ErrorType string
 
 const (
-	Authorization         Type = "AUTHORIZATION"
-	BadRequest            Type = "BAD_REQUEST"
-	Conflict              Type = "CONFLICT"
-	Internal              Type = "INTERNAL"
-	NotFound              Type = "NOT_FOUND"
-	RequestEntityTooLarge Type = "REQUEST_ENTITY_TOO_LARGE"
-	UnsupportedMediaType  Type = "UNSUPPORTED_MEDIA_TYPE"
-	ServiceUnavailable    Type = "SERVICE_UNAVAILABLE"
+	AuthorizationError         ErrorType = "AUTHORIZATION"
+	BadRequestError            ErrorType = "BAD_REQUEST"
+	ConflictError              ErrorType = "CONFLICT"
+	InternalError              ErrorType = "INTERNAL"
+	NotFoundError              ErrorType = "NOT_FOUND"
+	RequestEntityTooLargeError ErrorType = "REQUEST_ENTITY_TOO_LARGE"
+	UnsupportedMediaTypeError  ErrorType = "UNSUPPORTED_MEDIA_TYPE"
+	ServiceUnavailableError    ErrorType = "SERVICE_UNAVAILABLE"
 )
 
 type Error struct {
-	Type    Type   `json:"type"`
+	Type    ErrorType   `json:"type"`
 	Message string `json:"message"`
 }
 
@@ -29,21 +29,21 @@ func (e *Error) Error() string {
 
 func (e *Error) HttpStatus() int {
 	switch e.Type {
-	case Authorization:
+	case AuthorizationError:
 		return http.StatusUnauthorized
-	case BadRequest:
+	case BadRequestError:
 		return http.StatusBadRequest
-	case Conflict:
+	case ConflictError:
 		return http.StatusConflict
-	case Internal:
+	case InternalError:
 		return http.StatusInternalServerError
-	case NotFound:
+	case NotFoundError:
 		return http.StatusNotFound
-	case RequestEntityTooLarge:
+	case RequestEntityTooLargeError:
 		return http.StatusRequestEntityTooLarge
-	case UnsupportedMediaType:
+	case UnsupportedMediaTypeError:
 		return http.StatusUnsupportedMediaType
-	case ServiceUnavailable:
+	case ServiceUnavailableError:
 		return http.StatusServiceUnavailable
 	default:
 		return http.StatusInternalServerError
@@ -59,56 +59,56 @@ func ErrorHttpStatus(e error) int {
 
 func NewBadRequest(reason string) *Error {
 	return &Error{
-		Type:    BadRequest,
+		Type:    BadRequestError,
 		Message: fmt.Sprintf("BadRequest. Reason: %s", reason),
 	}
 }
 
 func NewAuthorization(reason string) *Error {
 	return &Error{
-		Type:    Authorization,
+		Type:    AuthorizationError,
 		Message: reason,
 	}
 }
 
 func NewConflict(name, value string) *Error {
 	return &Error{
-		Type:    Conflict,
+		Type:    ConflictError,
 		Message: fmt.Sprintf("Resource %v with value %v already exists", name, value),
 	}
 }
 
 func NewInternal(reason string) *Error {
 	return &Error{
-		Type:    Internal,
+		Type:    InternalError,
 		Message: reason,
 	}
 }
 
 func NewNotFound(name, value string) *Error {
 	return &Error{
-		Type:    NotFound,
+		Type:    NotFoundError,
 		Message: fmt.Sprintf("Resource %v with value %v already exists", name, value),
 	}
 }
 
 func NewRequestEntityTooLarge(maxBodySize, cotentLength int64) *Error {
 	return &Error{
-		Type:    RequestEntityTooLarge,
+		Type:    RequestEntityTooLargeError,
 		Message: fmt.Sprintf("Max payload: %v, Actual payload: %v", maxBodySize, cotentLength),
 	}
 }
 
 func NewUnsupportedMediaType(reason string) *Error {
 	return &Error{
-		Type:    UnsupportedMediaType,
+		Type:    UnsupportedMediaTypeError,
 		Message: reason,
 	}
 }
 
 func NewServiceUnavailable() *Error {
 	return &Error{
-		Type:    ServiceUnavailable,
+		Type:    ServiceUnavailableError,
 		Message: "Service unavailable or timed out",
 	}
 }

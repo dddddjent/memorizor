@@ -37,7 +37,7 @@ func ShouldBindJSONOrBadRequest(c *gin.Context, data any) bool {
 				})
 			}
 			err := util.Error{
-				Type:    util.BadRequest,
+				Type:    util.BadRequestError,
 				Message: "See invalid args for details",
 			}
 			c.JSON(err.HttpStatus(), gin.H{
@@ -48,7 +48,7 @@ func ShouldBindJSONOrBadRequest(c *gin.Context, data any) bool {
 		}
 
 		err := util.Error{
-			Type:    util.Internal,
+			Type:    util.InternalError,
 			Message: "Internal error",
 		}
 		c.JSON(err.HttpStatus(), gin.H{

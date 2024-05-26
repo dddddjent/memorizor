@@ -68,7 +68,7 @@ func TestSignUp(t *testing.T) {
 	})
 	t.Run("Conflict", func(t *testing.T) {
 		expectErr := &util.Error{
-			Type:    util.Conflict,
+			Type:    util.ConflictError,
 			Message: "Conflict",
 		}
 		mockRepo := &repository.SMockUserRepository{}
@@ -139,7 +139,7 @@ func TestSignIn(t *testing.T) {
 		err := service.SignIn(user)
 		assert.Error(t, err)
 
-		assert.Equal(t, util.Type("BAD_REQUEST"), err.(*util.Error).Type)
+		assert.Equal(t, util.ErrorType("BAD_REQUEST"), err.(*util.Error).Type)
 	})
 	t.Run("No user found", func(t *testing.T) {
 		user := &model.User{

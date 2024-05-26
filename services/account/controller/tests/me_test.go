@@ -78,7 +78,7 @@ func TestMe(t *testing.T) {
 		// mock the service
 		id, _ := uuid.NewV4()
 		userService := &services.SMockUserService{}
-		err := &util.Error{Type: util.NotFound, Message: "Could not find the user"}
+		err := &util.Error{Type: util.NotFoundError, Message: "Could not find the user"}
 		userService.On("GetByUUID", id).Return(nil, err)
 
 		r := gin.Default()
