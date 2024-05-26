@@ -36,3 +36,20 @@ func (r *sUserRepositoryPG) FindByUUID(id uuid.UUID) (*model.User, error) {
 	}
 	return user, nil
 }
+
+func (r *sUserRepositoryPG) FindByUserName(userName string) (*model.User, error) {
+	user := &model.User{}
+	r.db.Where("user_name = ?", userName).First(user)
+	if *user == *new(model.User) {
+		return nil, util.NewNotFound("user_name", userName)
+	}
+	return user, nil
+}
+func (r *sUserRepositoryPG) FindByEmail(email string) (*model.User, error) {
+	user := &model.User{}
+	r.db.Where("email = ?", email).First(user)
+	if *user == *new(model.User) {
+		return nil, util.NewNotFound("email", email)
+	}
+	return user, nil
+}

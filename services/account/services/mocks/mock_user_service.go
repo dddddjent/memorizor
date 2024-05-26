@@ -35,3 +35,9 @@ func (s *SMockUserService) SignUp(user *model.User) error {
 
 	return args.Error(0)
 }
+
+func (s *SMockUserService) SignIn(user *model.User) error {
+	args := s.Called(user)
+
+	return args.Error(0)
+}

@@ -64,7 +64,7 @@ func TestMe(t *testing.T) {
 		recorder := httptest.NewRecorder()
 		r.ServeHTTP(recorder, request)
 
-		err := util.Error{Type: util.BadRequest, Message: "Could not parse uuid"}
+        err := util.NewBadRequest("Could not parse uuid")
 		expectResponseBody, _ := json.Marshal(gin.H{
 			"error": err,
 		})

@@ -33,7 +33,9 @@ func NewController(config *Config) *sController {
 
 	timeoutDuration := time.Duration(config.Timeout) * time.Second
 	group := ctrl.router.Group(config.BaseURL)
-	group.Use(middleware.Timeout(timeoutDuration, util.NewServiceUnavailable()))
+	if gin.Mode() != gin.TestMode {
+		group.Use(middleware.Timeout(timeoutDuration, util.NewServiceUnavailable()))
+	}
 
 	group.GET("/me", ctrl.me)
 	group.POST("/signup", ctrl.signup)
@@ -48,12 +50,6 @@ func NewController(config *Config) *sController {
 
 func (ctrl *sController) Run(addr string) {
 	ctrl.router.Run(addr)
-}
-
-func (ctrl *sController) signin(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "signin",
-	})
 }
 
 func (ctrl *sController) signout(c *gin.Context) {

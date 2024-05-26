@@ -37,3 +37,41 @@ func (r *SMockUserRepository) Create(user *model.User) error {
 	}
 	return args.Get(0).(error)
 }
+
+func (r *SMockUserRepository) FindByUserName(userName string) (*model.User, error) {
+	args := r.Called(userName)
+
+	arg0 := args.Get(0)
+	var user *model.User
+	if arg0 != nil {
+		user = arg0.(*model.User)
+	}
+	err := args.Get(1)
+	if err != nil {
+		err, ok := err.(error)
+		if !ok {
+			panic("Could not cast arg 1 to err")
+		}
+		return user, err
+	}
+	return user, nil
+}
+
+func (r *SMockUserRepository) FindByEmail(email string) (*model.User, error) {
+	args := r.Called(email)
+
+	arg0 := args.Get(0)
+	var user *model.User
+	if arg0 != nil {
+		user = arg0.(*model.User)
+	}
+	err := args.Get(1)
+	if err != nil {
+		err, ok := err.(error)
+		if !ok {
+			panic("Could not cast arg 1 to err")
+		}
+		return user, err
+	}
+	return user, nil
+}

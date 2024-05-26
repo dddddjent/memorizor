@@ -21,3 +21,15 @@ type User struct {
 	ImageURL string    `json:"image_url"`
 	Website  string    `json:"website"`
 }
+
+func (u *User) DeepCopyTo(dst *User) {
+	dst.CreatedAt = u.CreatedAt
+	dst.UpdatedAt = u.UpdatedAt
+	dst.UUID = u.UUID
+	dst.Name = u.Name
+	dst.UserName = u.UserName
+	dst.Password = u.Password
+	dst.Email = u.Email
+	dst.ImageURL = u.ImageURL
+	dst.Website = u.Website
+}

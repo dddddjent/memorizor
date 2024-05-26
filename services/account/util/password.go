@@ -25,8 +25,12 @@ func EncodePassword(password string) (string, error) {
 	return hashPassword, nil
 }
 
+// Stored is the encoded one, given is the raw string
 func ComparePassword(store, given string) (bool, error) {
 	pwsalt := strings.Split(store, ".")
+	if len(pwsalt) != 2 {
+		panic("Incorrect stored encoded password provided")
+	}
 	salt, err := hex.DecodeString(pwsalt[1])
 	if err != nil {
 		return false, fmt.Errorf("Unable to decode salt")

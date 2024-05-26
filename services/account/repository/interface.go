@@ -9,6 +9,8 @@ import (
 
 type IUserRepository interface {
 	FindByUUID(uuid.UUID) (*model.User, error)
+	FindByUserName(string) (*model.User, error)
+	FindByEmail(string) (*model.User, error)
 	Create(*model.User) error
 }
 
