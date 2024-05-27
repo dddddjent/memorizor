@@ -2,7 +2,6 @@ package util
 
 import (
 	"crypto/rsa"
-	"fmt"
 	"log"
 	"memorizor/services/account/model"
 	"time"
@@ -45,7 +44,7 @@ func ValidateAccessToken(tokenString string, key *rsa.PublicKey) (*model.User, e
 		return nil, NewAuthorization("Unable to verify user from the access token: " + err.Error())
 	}
 	if !token.Valid {
-		return nil, fmt.Errorf("Access token is invalid")
+		return nil, NewAuthorization("Access token is invalid")
 	}
 	log.Println("claims: ", parsedClaims)
 	return parsedClaims.User, nil
@@ -81,15 +80,15 @@ func GenerateRefreshToken(id uuid.UUID, secret string, timeout time.Duration) (*
 	}
 	return &model.SRefreshToken{
 		TokenString: tokenString,
-		ID:          tokenID.String(),
-		UUID:        id.String(),
+		ID:          tokenID,
+		UUID:        id,
 	}, nil
 }
 
 func ValidateRefreshToken(tokenString string, secret string) (*model.SRefreshToken, error) {
 	parsedClaims := refreshTokenClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, &parsedClaims, func(t *jwt.Token) (any, error) {
-		return secret, nil
+		return []byte(secret), nil
 	})
 	if err != nil {
 		log.Println(err.Error())
@@ -97,13 +96,15 @@ func ValidateRefreshToken(tokenString string, secret string) (*model.SRefreshTok
 		return nil, NewAuthorization("Unable to verify user from the refresh token: " + err.Error())
 	}
 	if !token.Valid {
-		return nil, fmt.Errorf("Refresh token is invalid")
+		return nil, NewAuthorization("Refresh token is invalid")
 	}
 	log.Println("claims: ", parsedClaims)
+	tokenID, _ := uuid.FromString(parsedClaims.TokenId)
+	userID, _ := uuid.FromString(parsedClaims.UUID)
 	refreshToken := model.SRefreshToken{
 		TokenString: tokenString,
-		ID:          parsedClaims.UUID,
-		UUID:        parsedClaims.UUID,
+		ID:          tokenID,
+		UUID:        userID,
 	}
 	return &refreshToken, nil
 }

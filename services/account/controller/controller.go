@@ -3,9 +3,9 @@ package controller
 import (
 	"memorizor/services/account/controller/middleware"
 	"memorizor/services/account/services"
-	// "memorizor/services/account/util"
+	"memorizor/services/account/util"
 	"net/http"
-	// "time"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,9 +32,9 @@ func NewController(config *Config) *sController {
 	}
 
 	rootGroup := ctrl.router.Group(config.BaseURL)
-	// timeoutDuration := time.Duration(config.Timeout) * time.Second
+	timeoutDuration := time.Duration(config.Timeout) * time.Second
 	if gin.Mode() != gin.TestMode {
-		// rootGroup.Use(middleware.Timeout(timeoutDuration, util.NewServiceUnavailable()))
+		rootGroup.Use(middleware.Timeout(timeoutDuration, util.NewServiceUnavailable()))
 	}
 
 	group := rootGroup.Group(".")
@@ -42,7 +42,7 @@ func NewController(config *Config) *sController {
 		group.POST("/signup", ctrl.signup)
 		group.POST("/signin", ctrl.signin)
 		group.POST("/signout", ctrl.signout)
-		group.POST("/tokens", ctrl.tokens)
+		group.POST("/token", ctrl.token)
 		group.POST("/image", ctrl.image)
 		group.POST("/details", ctrl.details)
 	}
@@ -61,12 +61,6 @@ func NewController(config *Config) *sController {
 func (ctrl *sController) signout(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "signout",
-	})
-}
-
-func (ctrl *sController) tokens(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "tokens",
 	})
 }
 

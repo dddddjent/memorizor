@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gofrs/uuid"
 )
 
 type signInBody struct {
@@ -36,7 +37,7 @@ func (ctrl *sController) signin(c *gin.Context) {
 	}
 
 	var tokenPair *model.TokenPair
-	tokenPair, err := ctrl.tokenService.CreatePairFromUser(user, "")
+	tokenPair, err := ctrl.tokenService.CreatePairFromUser(user, uuid.Nil)
 	if err != nil {
 		err := err.(*util.Error)
 		c.JSON(err.HttpStatus(), gin.H{

@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -34,7 +35,7 @@ func TestSignUp(t *testing.T) {
 		userService := &services.SMockUserService{}
 		userService.On("SignUp", user).Return(nil)
 		tokenService := &services.SMockTokenService{}
-		tokenService.On("CreatePairFromUser", user, "").Return(tokenPair, nil)
+		tokenService.On("CreatePairFromUser", user, uuid.Nil).Return(tokenPair, nil)
 
 		r := gin.Default()
 		controller.NewController(&controller.Config{ // r on /me
@@ -328,7 +329,7 @@ func TestSignUp(t *testing.T) {
 		userService := &services.SMockUserService{}
 		userService.On("SignUp", mock.AnythingOfType("*model.User")).Return(nil)
 		tokenService := &services.SMockTokenService{}
-		tokenService.On("CreatePairFromUser", mock.AnythingOfType("*model.User"), "").Return(nil, expectErr)
+		tokenService.On("CreatePairFromUser", mock.AnythingOfType("*model.User"), uuid.Nil).Return(nil, expectErr)
 
 		r := gin.Default()
 		controller.NewController(&controller.Config{ // r on /me

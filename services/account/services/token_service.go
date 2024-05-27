@@ -6,6 +6,8 @@ import (
 	"memorizor/services/account/repository"
 	"memorizor/services/account/util"
 	"time"
+
+	"github.com/gofrs/uuid"
 )
 
 type sTokenService struct {
@@ -36,7 +38,16 @@ func NewSTokenService(config *STokenServiceConfig) ITokenService {
 	}
 }
 
-func (s *sTokenService) CreatePairFromUser(user *model.User, prevToken string) (*model.TokenPair, error) {
+func (s *sTokenService) CreatePairFromUser(user *model.User, prevToken uuid.UUID) (*model.TokenPair, error) {
+	if prevToken != uuid.Nil {
+		if err := s.tokenRepository.DeleteRefreshToken(user.UUID, prevToken); err != nil {
+			if err, ok := err.(*util.Error); ok {
+				return nil, err
+			}
+			return nil, util.NewInternal("Unable to delete previous token.\n" + err.Error())
+		}
+	}
+
 	accessTimeoutDuration := time.Duration(s.accessTokenTimeout) * time.Second
 	refreshTimeoutDuration := time.Duration(s.refreshTokenTimeout) * time.Second
 
@@ -50,19 +61,11 @@ func (s *sTokenService) CreatePairFromUser(user *model.User, prevToken string) (
 		return nil, util.NewInternal("Could not generate refresh token")
 	}
 
-	if err := s.tokenRepository.SetRefreshToken(user.UUID.String(), refreshToken.ID, refreshTimeoutDuration); err != nil {
+	if err := s.tokenRepository.SetRefreshToken(user.UUID, refreshToken.ID, refreshTimeoutDuration); err != nil {
 		if err, ok := err.(*util.Error); ok {
 			return nil, err
 		}
 		return nil, util.NewInternal("Unable to set refresh token.\n" + err.Error())
-	}
-	if prevToken != "" {
-		if err := s.tokenRepository.DeleteRefreshToken(user.UUID.String(), prevToken); err != nil {
-			if err, ok := err.(*util.Error); ok {
-				return nil, err
-			}
-			return nil, util.NewInternal("Unable to delete previous token.\n" + err.Error())
-		}
 	}
 
 	return &model.TokenPair{
@@ -77,4 +80,12 @@ func (s *sTokenService) ValidateAccessToken(tokenString string) (*model.User, er
 		return nil, err
 	}
 	return user, nil
+}
+
+func (s *sTokenService) ValidateRefreshToken(tokenString string) (*model.SRefreshToken, error) {
+	refreshToken, err := util.ValidateRefreshToken(tokenString, s.refreshSecret)
+	if err != nil {
+		return nil, err
+	}
+	return refreshToken, nil
 }
