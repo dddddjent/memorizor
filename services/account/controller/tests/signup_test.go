@@ -28,8 +28,8 @@ func TestSignUp(t *testing.T) {
 			Password: "123456",
 		}
 		tokenPair := &model.TokenPair{
-			AccessToken:      "123",
-			RefreshToken: "1222",
+			AccessToken:  "123",
+			RefreshToken: model.SRefreshToken{},
 		}
 		userService := &services.SMockUserService{}
 		userService.On("SignUp", user).Return(nil)
@@ -274,7 +274,7 @@ func TestSignUp(t *testing.T) {
 		expectCode = http.StatusBadRequest
 		err = json.Unmarshal(recorder.Body.Bytes(), &actualResp)
 		actualFieldErr = actualResp["invalid_args"][0]["Field"]
-        
+
 		assert.Equal(t, 1, len(actualResp["invalid_args"]))
 		assert.Equal(t, expectCode, recorder.Code)
 		assert.Equal(t, "Password", actualFieldErr)
@@ -288,7 +288,7 @@ func TestSignUp(t *testing.T) {
 			Password: "123456",
 		}
 		userService := &services.SMockUserService{}
-        expectErr := util.NewInternal("No")
+		expectErr := util.NewInternal("No")
 		userService.On("SignUp", mock.AnythingOfType("*model.User")).Return(expectErr)
 
 		r := gin.Default()
@@ -324,7 +324,7 @@ func TestSignUp(t *testing.T) {
 			Email:    "333@g.com",
 			Password: "123456",
 		}
-        expectErr := util.NewInternal("No")
+		expectErr := util.NewInternal("No")
 		userService := &services.SMockUserService{}
 		userService.On("SignUp", mock.AnythingOfType("*model.User")).Return(nil)
 		tokenService := &services.SMockTokenService{}

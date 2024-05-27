@@ -2,10 +2,10 @@ package services
 
 import (
 	"crypto/rsa"
-	"log"
 	"memorizor/services/account/model"
 	"memorizor/services/account/repository"
 	"memorizor/services/account/util"
+	"time"
 )
 
 type sTokenService struct {
@@ -37,17 +37,20 @@ func NewSTokenService(config *STokenServiceConfig) ITokenService {
 }
 
 func (s *sTokenService) CreatePairFromUser(user *model.User, prevToken string) (*model.TokenPair, error) {
-	accessToken, err := util.GenerateAccessToken(user, s.privateKey, s.accessTokenTimeout)
+	accessTimeoutDuration := time.Duration(s.accessTokenTimeout) * time.Second
+	refreshTimeoutDuration := time.Duration(s.refreshTokenTimeout) * time.Second
+
+	accessToken, err := util.GenerateAccessToken(user, s.privateKey, accessTimeoutDuration)
 	if err != nil {
 		return nil, util.NewInternal("Could not generate access token")
 	}
 
-	refreshToken, err := util.GenerateRefreshToken(user.UUID, s.refreshSecret, s.refreshTokenTimeout)
+	refreshToken, err := util.GenerateRefreshToken(user.UUID, s.refreshSecret, refreshTimeoutDuration)
 	if err != nil {
 		return nil, util.NewInternal("Could not generate refresh token")
 	}
 
-	if err := s.tokenRepository.SetRefreshToken(user.UUID.String(), refreshToken.ID, refreshToken.ExpiresIn); err != nil {
+	if err := s.tokenRepository.SetRefreshToken(user.UUID.String(), refreshToken.ID, refreshTimeoutDuration); err != nil {
 		if err, ok := err.(*util.Error); ok {
 			return nil, err
 		}
@@ -64,18 +67,14 @@ func (s *sTokenService) CreatePairFromUser(user *model.User, prevToken string) (
 
 	return &model.TokenPair{
 		AccessToken:  accessToken,
-		RefreshToken: refreshToken.TokenString,
+		RefreshToken: *refreshToken,
 	}, nil
 }
 
 func (s *sTokenService) ValidateAccessToken(tokenString string) (*model.User, error) {
-	claims, err := util.ValidateAccessToken(tokenString, s.publicKey)
+	user, err := util.ValidateAccessToken(tokenString, s.publicKey)
 	if err != nil {
-		log.Println(err.Error())
-		log.Println("Could not get claims from the request")
-		return nil, util.NewAuthorization("Unable to verify user from the access token")
+		return nil, err
 	}
-	log.Println("claims: ", claims)
-	user := claims.User
 	return user, nil
 }

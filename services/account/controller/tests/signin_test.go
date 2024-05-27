@@ -28,8 +28,8 @@ func TestSignIn(t *testing.T) {
 			Password: "123456",
 		}
 		tokenPair := &model.TokenPair{
-			AccessToken:      "123",
-			RefreshToken: "1222",
+			AccessToken:  "123",
+			RefreshToken: model.SRefreshToken{},
 		}
 		userService := &services.SMockUserService{}
 		userService.On("SignIn", user).Return(nil)

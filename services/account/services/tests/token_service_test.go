@@ -6,7 +6,6 @@ import (
 	"memorizor/services/account/model"
 	mockRepo "memorizor/services/account/repository/mocks"
 	"memorizor/services/account/services"
-	"memorizor/services/account/util"
 	"os"
 	"testing"
 	"time"
@@ -56,12 +55,21 @@ func TestCreatePairFromUser(t *testing.T) {
 		RefreshTokenTimeout: int64(refreshTimeOut),
 	})
 
+	type accessTokenClaims struct {
+		jwt.RegisteredClaims
+		User *model.User `json:"user"`
+	}
+	type refreshTokenClaims struct {
+		jwt.RegisteredClaims
+		UUID    string `json:"uuid"`
+		TokenId string `json:"token_id"`
+	}
 	t.Run("Generate a pair of keys", func(t *testing.T) {
 		tokenPair, err := tokenService.CreatePairFromUser(user, "a previous token")
 		assert.NoError(t, err)
 
 		// AccessToken
-		accessClaims := util.AccessTokenClaims{}
+		accessClaims := accessTokenClaims{}
 		_, err = jwt.ParseWithClaims(tokenPair.AccessToken, &accessClaims, func(t *jwt.Token) (any, error) {
 			return publicKey, nil
 		})
@@ -79,8 +87,8 @@ func TestCreatePairFromUser(t *testing.T) {
 		assert.WithinDuration(t, actualExpire, expectedExpire, 5*time.Second) // this and create pair should be within 5s
 
 		// RefreshToken
-		refreshClaims := util.RefreshTokenClaims{}
-		_, err = jwt.ParseWithClaims(tokenPair.RefreshToken, &refreshClaims, func(t *jwt.Token) (any, error) {
+		refreshClaims := refreshTokenClaims{}
+		_, err = jwt.ParseWithClaims(tokenPair.RefreshToken.TokenString, &refreshClaims, func(t *jwt.Token) (any, error) {
 			return []byte(secret), nil
 		})
 		assert.NoError(t, err)
