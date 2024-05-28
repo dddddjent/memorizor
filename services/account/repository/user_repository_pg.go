@@ -45,6 +45,7 @@ func (r *sUserRepositoryPG) FindByUserName(userName string) (*model.User, error)
 	}
 	return user, nil
 }
+
 func (r *sUserRepositoryPG) FindByEmail(email string) (*model.User, error) {
 	user := &model.User{}
 	r.db.Where("email = ?", email).First(user)
@@ -52,4 +53,9 @@ func (r *sUserRepositoryPG) FindByEmail(email string) (*model.User, error) {
 		return nil, util.NewNotFound("email", email)
 	}
 	return user, nil
+}
+
+func (r *sUserRepositoryPG) Update(id uuid.UUID, update_map map[string]any) (*model.User, error) {
+	r.db.Model(&model.User{}).Where("uuid = ?", id).Updates(update_map)
+	return r.FindByUUID(id)
 }

@@ -42,8 +42,6 @@ func NewController(config *Config) *sController {
 		group.POST("/signup", ctrl.signup)
 		group.POST("/signin", ctrl.signin)
 		group.POST("/token", ctrl.token)
-		group.POST("/image", ctrl.image)
-		group.POST("/details", ctrl.details)
 	}
 
 	authGroup := rootGroup.Group(".")
@@ -52,7 +50,9 @@ func NewController(config *Config) *sController {
 	}
 	{
 		authGroup.GET("/me", ctrl.me)
+		authGroup.POST("/me", ctrl.updateMe)
 		authGroup.POST("/signout", ctrl.signout)
+		authGroup.POST("/image", ctrl.image)
 	}
 
 	return ctrl
@@ -61,11 +61,5 @@ func NewController(config *Config) *sController {
 func (ctrl *sController) image(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "image",
-	})
-}
-
-func (ctrl *sController) details(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "details",
 	})
 }

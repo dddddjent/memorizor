@@ -7,6 +7,7 @@ type IUserService interface {
 	GetByUUID(uuid.UUID) (*model.User, error)
 	SignUp(*model.User) error
 	SignIn(*model.User) error
+	Update(id uuid.UUID, update_map map[string]any) (*model.User, error)
 }
 
 type ITokenService interface {

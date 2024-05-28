@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"memorizor/services/account/model"
 	"memorizor/services/account/repository"
 	"memorizor/services/account/util"
@@ -68,4 +69,20 @@ func (service *sUserService) SignIn(user *model.User) error {
 	}
 	*user = *userFound
 	return nil
+}
+
+func (s *sUserService) Update(id uuid.UUID, updateMap map[string]any) (*model.User, error) {
+	for key := range updateMap {
+		if _, exists := model.AllowedUserFieldTags[key]; !exists {
+			return nil, util.NewBadRequest(fmt.Sprintf("Invalid user info: '%s' to update", key))
+		}
+	}
+	if password, exists := updateMap["password"]; exists {
+		password := password.(string)
+		password, err := util.EncodePassword(password)
+		if err != nil {
+			return nil, util.NewInternal("Could not encode the password")
+		}
+	}
+	return s.repository.Update(id, updateMap)
 }

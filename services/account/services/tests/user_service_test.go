@@ -181,3 +181,42 @@ func TestSignIn(t *testing.T) {
 		mockRepo.AssertExpectations(t)
 	})
 }
+
+func TestUpdate(t *testing.T) {
+	mockRepo := &repository.SMockUserRepository{}
+	service := services.NewSUserService(&services.SUserServiceConfig{
+		Repository: mockRepo,
+	})
+	id1, _ := uuid.NewV4()
+	user := &model.User{
+		UUID: id1,
+	}
+	id2, _ := uuid.NewV4()
+	updateMap1 := map[string]any{
+		"password": "123456",
+	}
+	updateMap2 := map[string]any{
+		"uuid": "123456",
+	}
+	expectErr := util.NewInternal("No")
+	mockRepo.On("Update", id1, updateMap1).Return(user, nil)
+	mockRepo.On("Update", id2, updateMap1).Return(nil, expectErr)
+
+	t.Run("Success", func(t *testing.T) {
+		actualUser, err := service.Update(id1, updateMap1)
+		assert.NoError(t, err)
+		assert.Equal(t, user, actualUser)
+	})
+
+	t.Run("Failed to update", func(t *testing.T) {
+		_, err := service.Update(id2, updateMap1)
+		actualErr := err.(*util.Error)
+		assert.Equal(t, expectErr.HttpStatus(), actualErr.HttpStatus())
+	})
+
+	t.Run("Failed to update", func(t *testing.T) {
+		_, err := service.Update(id1, updateMap2)
+		actualErr := err.(*util.Error)
+		assert.Equal(t, util.NewBadRequest("").HttpStatus(), actualErr.HttpStatus())
+	})
+}

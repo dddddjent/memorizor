@@ -12,6 +12,8 @@ type IUserRepository interface {
 	FindByUserName(string) (*model.User, error)
 	FindByEmail(string) (*model.User, error)
 	Create(*model.User) error
+	// Update the user, and put the result in the input user
+	Update(id uuid.UUID, update_map map[string]any) (*model.User, error)
 }
 
 type ITokenRepository interface {
