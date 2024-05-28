@@ -67,3 +67,17 @@ func (s *SMockTokenService) ValidateRefreshToken(tokenString string) (*model.SRe
 	}
 	return token, nil
 }
+
+func (s *SMockTokenService) SignOut(user *model.User, prevToken uuid.UUID) error {
+	args := s.Called(user, prevToken)
+
+	err := args.Get(0)
+	if err != nil {
+		err, ok := err.(error)
+		if !ok {
+			panic("Could not cast arg 0 to err")
+		}
+		return err
+	}
+	return nil
+}

@@ -13,4 +13,6 @@ type ITokenService interface {
 	CreatePairFromUser(user *model.User, prevToken uuid.UUID) (*model.TokenPair, error)
 	ValidateAccessToken(tokenString string) (*model.User, error)
 	ValidateRefreshToken(tokenString string) (*model.SRefreshToken, error)
+	// If prevToken is not Nil, then only delete that refresh token
+	SignOut(user *model.User, prevToken uuid.UUID) error
 }

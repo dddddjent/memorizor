@@ -89,3 +89,11 @@ func (s *sTokenService) ValidateRefreshToken(tokenString string) (*model.SRefres
 	}
 	return refreshToken, nil
 }
+
+func (s *sTokenService) SignOut(user *model.User, prevToken uuid.UUID) error {
+	if prevToken == uuid.Nil {
+		return s.tokenRepository.DeleteUserRefreshTokens(user.UUID)
+	} else {
+		return s.tokenRepository.DeleteRefreshToken(user.UUID, prevToken)
+	}
+}

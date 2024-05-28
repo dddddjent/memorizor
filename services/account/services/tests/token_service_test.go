@@ -5,6 +5,7 @@ import (
 	"log"
 	"memorizor/services/account/model"
 	mockRepo "memorizor/services/account/repository/mocks"
+	repository "memorizor/services/account/repository/mocks"
 	"memorizor/services/account/services"
 	"os"
 	"testing"
@@ -187,5 +188,49 @@ func TestValidateTokens(t *testing.T) {
 
 		_, err = tokenService.ValidateRefreshToken(tokenPair.RefreshToken.TokenString[1:])
 		assert.Error(t, err)
+	})
+}
+
+func TestSignOut(t *testing.T) {
+	id, _ := uuid.NewV4()
+	user := &model.User{
+		UUID: id,
+	}
+	id, _ = uuid.NewV4()
+	userFailed := &model.User{
+		UUID: id,
+	}
+	prevToken, _ := uuid.NewV4()
+	prevTokenFailed, _ := uuid.NewV4()
+	expectErr := fmt.Errorf("No")
+
+	mockRepo := repository.SMockTokenRepository{}
+	mockRepo.On("DeleteUserRefreshTokens", user.UUID).Return(nil)
+	mockRepo.On("DeleteRefreshToken", user.UUID, prevToken).Return(nil)
+	mockRepo.On("DeleteUserRefreshTokens", userFailed.UUID).Return(expectErr)
+	mockRepo.On("DeleteRefreshToken", userFailed.UUID, prevTokenFailed).Return(expectErr)
+	service := services.NewSTokenService(&services.STokenServiceConfig{
+		TokenRepository: &mockRepo,
+	})
+
+	t.Run("Successfully delete all tokens", func(t *testing.T) {
+		err := service.SignOut(user, uuid.Nil)
+		assert.NoError(t, err)
+		mockRepo.AssertNotCalled(t, "DeleteRefreshToken")
+	})
+	t.Run("Successfully delete this token", func(t *testing.T) {
+		err := service.SignOut(user, prevToken)
+		assert.NoError(t, err)
+		mockRepo.AssertNotCalled(t, "DeleteUserRefreshTokens")
+	})
+	t.Run("Failed to delete all tokens", func(t *testing.T) {
+		err := service.SignOut(userFailed, uuid.Nil)
+		assert.Equal(t, expectErr, err)
+		mockRepo.AssertNotCalled(t, "DeleteRefreshToken")
+	})
+	t.Run("Failed to delete this token", func(t *testing.T) {
+		err := service.SignOut(userFailed, prevTokenFailed)
+		assert.Equal(t, expectErr, err)
+		mockRepo.AssertNotCalled(t, "DeleteUserRefreshTokens")
 	})
 }

@@ -19,8 +19,18 @@ func (s *SMockTokenRepository) SetRefreshToken(userID, tokenID uuid.UUID, expire
 	}
 	return ret.Get(0).(error)
 }
+
 func (s *SMockTokenRepository) DeleteRefreshToken(userID, previousTokenID uuid.UUID) error {
 	ret := s.Called(userID, previousTokenID)
+
+	if ret.Get(0) == nil {
+		return nil
+	}
+	return ret.Get(0).(error)
+}
+
+func (s *SMockTokenRepository) DeleteUserRefreshTokens(userID uuid.UUID) error {
+	ret := s.Called(userID)
 
 	if ret.Get(0) == nil {
 		return nil
