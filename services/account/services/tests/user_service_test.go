@@ -23,7 +23,7 @@ func TestGetByUUID(t *testing.T) {
 		mockRepo.On("FindByUUID", id).Return(user, nil)
 
 		service := services.NewSUserService(&services.SUserServiceConfig{
-			Repository: mockRepo,
+			UserRepository: mockRepo,
 		})
 
 		expectUser := user
@@ -39,7 +39,7 @@ func TestGetByUUID(t *testing.T) {
 		mockRepo.On("FindByUUID", id).Return(nil, err)
 
 		service := services.NewSUserService(&services.SUserServiceConfig{
-			Repository: mockRepo,
+			UserRepository: mockRepo,
 		})
 
 		actualUser, actualErr := service.GetByUUID(id)
@@ -60,7 +60,7 @@ func TestSignUp(t *testing.T) {
 		mockRepo.On("Create", user).Return(nil)
 
 		service := services.NewSUserService(&services.SUserServiceConfig{
-			Repository: mockRepo,
+			UserRepository: mockRepo,
 		})
 		err := service.SignUp(user)
 		assert.Nil(t, err)
@@ -75,7 +75,7 @@ func TestSignUp(t *testing.T) {
 		mockRepo.On("Create", mock.AnythingOfType("*model.User")).Return(expectErr)
 
 		service := services.NewSUserService(&services.SUserServiceConfig{
-			Repository: mockRepo,
+			UserRepository: mockRepo,
 		})
 		err := service.SignUp(&model.User{})
 		assert.Equal(t, expectErr, err)
@@ -99,7 +99,7 @@ func TestSignIn(t *testing.T) {
 		mockRepo.On("FindByUserName", user.UserName).Return(userFound, nil)
 
 		service := services.NewSUserService(&services.SUserServiceConfig{
-			Repository: mockRepo,
+			UserRepository: mockRepo,
 		})
 		err = service.SignIn(user)
 		assert.Nil(t, err)
@@ -122,7 +122,7 @@ func TestSignIn(t *testing.T) {
 		mockRepo.On("FindByEmail", user.Email).Return(userFound, nil)
 
 		service := services.NewSUserService(&services.SUserServiceConfig{
-			Repository: mockRepo,
+			UserRepository: mockRepo,
 		})
 		err = service.SignIn(user)
 		assert.Nil(t, err)
@@ -152,7 +152,7 @@ func TestSignIn(t *testing.T) {
 		mockRepo.On("FindByEmail", user.Email).Return(nil, expectErr)
 
 		service := services.NewSUserService(&services.SUserServiceConfig{
-			Repository: mockRepo,
+			UserRepository: mockRepo,
 		})
 		err := service.SignIn(user)
 		assert.Equal(t, expectErr, err.(*util.Error))
@@ -173,7 +173,7 @@ func TestSignIn(t *testing.T) {
 		mockRepo.On("FindByEmail", user.Email).Return(userFound, nil)
 
 		service := services.NewSUserService(&services.SUserServiceConfig{
-			Repository: mockRepo,
+			UserRepository: mockRepo,
 		})
 		err = service.SignIn(user)
 		expectErr := util.NewAuthorization("Incorrect password")
@@ -185,7 +185,7 @@ func TestSignIn(t *testing.T) {
 func TestUpdate(t *testing.T) {
 	mockRepo := &repository.SMockUserRepository{}
 	service := services.NewSUserService(&services.SUserServiceConfig{
-		Repository: mockRepo,
+		UserRepository: mockRepo,
 	})
 	id1, _ := uuid.NewV4()
 	user := &model.User{

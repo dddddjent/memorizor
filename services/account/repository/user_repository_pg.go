@@ -59,3 +59,12 @@ func (r *sUserRepositoryPG) Update(id uuid.UUID, update_map map[string]any) (*mo
 	r.db.Model(&model.User{}).Where("uuid = ?", id).Updates(update_map)
 	return r.FindByUUID(id)
 }
+
+func (r *sUserRepositoryPG) UpdateProfileImageURL(id uuid.UUID, newURL string) error {
+	user, err := r.FindByUUID(id)
+	if err != nil {
+		return err
+	}
+	r.db.Model(user).Where("uuid = ?", id).Update("profile_image_url", newURL)
+	return nil
+}

@@ -2,6 +2,7 @@ package services
 
 import (
 	"memorizor/services/account/model"
+	"mime/multipart"
 
 	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/mock"
@@ -42,8 +43,8 @@ func (s *SMockUserService) SignIn(user *model.User) error {
 	return args.Error(0)
 }
 
-func (s *SMockUserService) Update(id uuid.UUID, update_map map[string]any) (*model.User, error) {
-	args := s.Called(id, update_map) // if is called by this id
+func (s *SMockUserService) Update(id uuid.UUID, updateMap map[string]any) (*model.User, error) {
+	args := s.Called(id, updateMap) // if is called by this id
 
 	arg0 := args.Get(0) // then return these args (definded by On() method)
 	var user *model.User
@@ -59,4 +60,9 @@ func (s *SMockUserService) Update(id uuid.UUID, update_map map[string]any) (*mod
 		return user, err
 	}
 	return user, nil
+}
+
+func (s *SMockUserService) UpdateProfileImage(id uuid.UUID, imageFile multipart.File, imageType string) (imageURL string, err error) {
+	args := s.Called(id, imageFile, imageType)
+	return args.String(0), args.Error(1)
 }

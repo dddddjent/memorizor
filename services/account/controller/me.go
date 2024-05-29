@@ -42,7 +42,6 @@ type updateMeBody struct {
 	UserName *string `json:"user_name" binding:"omitempty,gte=3,lte=30"`
 	Password *string `json:"password" binding:"omitempty,gte=6,lte=10"`
 	Email    *string `json:"email" binding:"omitempty,email"`
-	ImageURL string  `json:"image_url"`
 	Website  string  `json:"website"`
 	Bio      string  `json:"bio"`
 }

@@ -1,13 +1,18 @@
 package services
 
-import "github.com/gofrs/uuid"
-import "memorizor/services/account/model"
+import (
+	"memorizor/services/account/model"
+	"mime/multipart"
+
+	"github.com/gofrs/uuid"
+)
 
 type IUserService interface {
 	GetByUUID(uuid.UUID) (*model.User, error)
 	SignUp(*model.User) error
 	SignIn(*model.User) error
 	Update(id uuid.UUID, update_map map[string]any) (*model.User, error)
+	UpdateProfileImage(id uuid.UUID, imageFile multipart.File, imageType string) (imageURL string, err error)
 }
 
 type ITokenService interface {

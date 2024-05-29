@@ -94,3 +94,9 @@ func (r *SMockUserRepository) Update(id uuid.UUID, update_map map[string]any) (*
 	}
 	return user, nil
 }
+
+func (s *SMockUserRepository) UpdateProfileImageURL(id uuid.UUID, newURL string) error {
+	args := s.Called(id, newURL)
+
+	return args.Error(0)
+}

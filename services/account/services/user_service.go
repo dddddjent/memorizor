@@ -5,26 +5,30 @@ import (
 	"memorizor/services/account/model"
 	"memorizor/services/account/repository"
 	"memorizor/services/account/util"
+	"mime/multipart"
 
 	"github.com/gofrs/uuid"
 )
 
 type sUserService struct {
-	repository repository.IUserRepository
+	userRepo         repository.IUserRepository
+	profileImageRepo repository.IProfileImageRepository
 }
 
 type SUserServiceConfig struct {
-	Repository repository.IUserRepository
+	UserRepository   repository.IUserRepository
+	ProfileImageRepo repository.IProfileImageRepository
 }
 
 func NewSUserService(config *SUserServiceConfig) IUserService {
 	return &sUserService{
-		repository: config.Repository,
+		userRepo:         config.UserRepository,
+		profileImageRepo: config.ProfileImageRepo,
 	}
 }
 
 func (service *sUserService) GetByUUID(id uuid.UUID) (*model.User, error) {
-	return service.repository.FindByUUID(id)
+	return service.userRepo.FindByUUID(id)
 }
 func (service *sUserService) SignUp(user *model.User) error {
 	encoded, err := util.EncodePassword(user.Password)
@@ -33,7 +37,7 @@ func (service *sUserService) SignUp(user *model.User) error {
 	}
 
 	user.Password = encoded
-	if err := service.repository.Create(user); err != nil {
+	if err := service.userRepo.Create(user); err != nil {
 		return err
 	}
 	return nil
@@ -52,9 +56,9 @@ func (service *sUserService) SignIn(user *model.User) error {
 		err       error
 	)
 	if email != "" {
-		userFound, err = service.repository.FindByEmail(email)
+		userFound, err = service.userRepo.FindByEmail(email)
 	} else {
-		userFound, err = service.repository.FindByUserName(userName)
+		userFound, err = service.userRepo.FindByUserName(userName)
 	}
 	if err != nil {
 		return util.NewAuthorization("No user found")
@@ -84,5 +88,18 @@ func (s *sUserService) Update(id uuid.UUID, updateMap map[string]any) (*model.Us
 			return nil, util.NewInternal("Could not encode the password")
 		}
 	}
-	return s.repository.Update(id, updateMap)
+	return s.userRepo.Update(id, updateMap)
+}
+
+func (s *sUserService) UpdateProfileImage(id uuid.UUID, imageFile multipart.File, imageType string) (imageURL string, err error) {
+	newURL, err := s.profileImageRepo.Update(id, imageFile, imageType)
+	if err != nil {
+		return "", err
+	}
+
+	err = s.userRepo.UpdateProfileImageURL(id, newURL)
+	if err != nil {
+		return "", err
+	}
+	return newURL, nil
 }

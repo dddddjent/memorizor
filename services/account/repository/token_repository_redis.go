@@ -16,7 +16,7 @@ type sTokenRepositoryRedis struct {
 	ctx context.Context
 }
 
-func NewSTokenRepository(rdb *redis.Client) ITokenRepository {
+func NewSTokenRepositoryRedis(rdb *redis.Client) ITokenRepository {
 	return &sTokenRepositoryRedis{
 		rdb: rdb,
 		ctx: context.Background(),

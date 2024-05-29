@@ -10,6 +10,8 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/redis/go-redis/v9"
@@ -41,19 +43,39 @@ func generateDataSources() map[string]any {
 		panic("Could not connect to Redis")
 	}
 
+	cfg, err := config.LoadDefaultConfig(context.TODO(),
+		config.WithSharedCredentialsFiles(
+			[]string{"/keys" + os.Getenv("AWS_CREDENTIAL_PATH")},
+		),
+	)
+	if err != nil {
+		panic("Could not connect to aws")
+	}
+	client := s3.NewFromConfig(cfg, func(o *s3.Options) {
+		o.Region = os.Getenv("AWS_REGION")
+	})
+
 	return map[string]any{
-		"postgres": postgresDB,
-		"redis":    rdb,
+		"postgres":            postgresDB,
+		"redis":               rdb,
+		"aws":                 client,
+		"aws_bucket_name":     os.Getenv("AWS_BUCKET_NAME"),
+		"aws_bucket_url_root": os.Getenv("AWS_BUCKET_URL_ROOT"),
 	}
 }
 
 func ConfigureRouter(r *gin.Engine) {
 	dataSources := generateDataSources()
 
-	tokenRepository := repository.NewSTokenRepository(dataSources["redis"].(*redis.Client))
+	tokenRepository := repository.NewSTokenRepositoryRedis(dataSources["redis"].(*redis.Client))
 
 	userService := services.NewSUserService(&services.SUserServiceConfig{
-		Repository: repository.NewSUserRepositoryPG(dataSources["postgres"].(*gorm.DB)),
+		UserRepository: repository.NewSUserRepositoryPG(dataSources["postgres"].(*gorm.DB)),
+		ProfileImageRepo: repository.NewSProfileImageRepositoryAWS(
+			dataSources["aws"].(*s3.Client),
+			dataSources["aws_bucket_name"].(string),
+			dataSources["aws_bucket_url_root"].(string),
+		),
 	})
 
 	privateKeyBytes, err := os.ReadFile("/keys/" + os.Getenv("RSA_PRIVATE_KEY_FILE"))
@@ -74,7 +96,7 @@ func ConfigureRouter(r *gin.Engine) {
 		PrivateKey:          privateKey,
 		PublicKey:           publicKey,
 		RefreshSecret:       refreshSecret,
-		AccessTokenTimeout:      idTimeout,
+		AccessTokenTimeout:  idTimeout,
 		RefreshTokenTimeout: refreshTimeout,
 	})
 

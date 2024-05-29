@@ -4,7 +4,6 @@ import (
 	"memorizor/services/account/controller/middleware"
 	"memorizor/services/account/services"
 	"memorizor/services/account/util"
-	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -52,14 +51,8 @@ func NewController(config *Config) *sController {
 		authGroup.GET("/me", ctrl.me)
 		authGroup.POST("/me", ctrl.updateMe)
 		authGroup.POST("/signout", ctrl.signout)
-		authGroup.POST("/image", ctrl.image)
+		authGroup.POST("/profile_image", ctrl.profile_image)
 	}
 
 	return ctrl
-}
-
-func (ctrl *sController) image(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "image",
-	})
 }
