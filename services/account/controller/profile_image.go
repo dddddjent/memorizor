@@ -20,7 +20,14 @@ func (ctrl *sController) profile_image(c *gin.Context) {
 	user := userAny.(*model.User)
 	id := user.UUID
 
-	imageFileHeader, _ := c.FormFile("image")
+	imageFileHeader, err := c.FormFile("image")
+	if err != nil {
+		err := util.NewBadRequest(err.Error())
+		c.JSON(err.HttpStatus(), gin.H{
+			"error": err,
+		})
+		return
+	}
 	imageTypeRaw := imageFileHeader.Header.Get("Content-Type")
 	imageType, err := util.ExtractImageType(imageTypeRaw)
 	if err != nil {
