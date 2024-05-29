@@ -5,6 +5,7 @@ import (
 	"memorizor/services/account/repository/mocks"
 	"memorizor/services/account/services"
 	"memorizor/services/account/util"
+	"os"
 	"testing"
 
 	"github.com/gofrs/uuid"
@@ -218,5 +219,26 @@ func TestUpdate(t *testing.T) {
 		_, err := service.Update(id1, updateMap2)
 		actualErr := err.(*util.Error)
 		assert.Equal(t, util.NewBadRequest("").HttpStatus(), actualErr.HttpStatus())
+	})
+}
+
+func TestUpdateProfileImage(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
+		mockUserRepo := &repository.SMockUserRepository{}
+		mockProfileImageRepo := &repository.SMockProfileImageRepository{}
+		service := services.NewSUserService(&services.SUserServiceConfig{
+			UserRepository:   mockUserRepo,
+			ProfileImageRepo: mockProfileImageRepo,
+		})
+		id, _ := uuid.NewV4()
+		mockProfileImageRepo.On("Update", id, mock.AnythingOfType("*os.File"), "png").Return("123", nil)
+		mockUserRepo.On("UpdateProfileImageURL", id, "123").Return(nil)
+
+		imageFile, _ := os.CreateTemp("", "123")
+		actualURL, err := service.UpdateProfileImage(id, imageFile, "png")
+		assert.NoError(t, err)
+		assert.Equal(t, "123", actualURL)
+		mockUserRepo.AssertExpectations(t)
+		mockProfileImageRepo.AssertExpectations(t)
 	})
 }
