@@ -15,4 +15,3 @@ RUN pnpm run build
 FROM nginx:latest
 COPY --from=build /app/dist /app/dist
 COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 80
