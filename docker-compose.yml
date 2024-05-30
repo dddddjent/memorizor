@@ -42,3 +42,19 @@ services:
       - '6379:6379'
     volumes:
       - ./data/tokens/:/data/
+
+  client:
+    build:
+      context: ./client
+      target: build
+    image: memorizor/client-src
+    env_file: ./.env.dev
+    expose:
+      - 80
+    volumes:
+      - ./client/:/app
+    depends_on:
+      - account
+      - postgres-users
+      - redis-tokens
+    command: pnpm run dev --host client --port 80
