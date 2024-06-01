@@ -1,71 +1,91 @@
 .signin-root {
-    width: 40%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+	width: 40%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 .signin-title {
-    text-align: center;
-    font-size: 2.0em;
-    margin-top: 2%;
-    margin-bottom: 4%;
+	text-align: center;
+	font-size: 2em;
+	margin-top: 2%;
+	margin-bottom: 4%;
 }
 
 .signin-form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
 .signin-row {
-    width: 100%;
-    display: flex;
+	width: 100%;
+	display: flex;
 }
 
 .signin-label {
-    width: 40%;
-    margin-top: 1%;
-    margin-bottom: 1%;
-    text-align: center;
+	width: 40%;
+	margin-top: 1%;
+	margin-bottom: 1%;
+	text-align: center;
 }
 
 .signin-input {
-    width: 60%;
-    margin-top: 1%;
-    margin-bottom: 1%;
+	width: 60%;
+	margin-top: 1%;
+	margin-bottom: 1%;
 }
 
 .signin-switch-signin-method {
-    width: 100%;
-    display: flex;
+	width: 100%;
+	display: flex;
 }
 
 .signin-switch-signin-button {
-    margin-left: auto;
-    font-size: 0.7em;
-    background: inherit;
-    border-style: inherit;
+	margin-left: auto;
+	font-size: 0.7em;
+	background: inherit;
+	border-style: inherit;
 }
 
 .signin-switch-signin-button:hover {
-    color: #0000bb;
+	color: #0000bb;
 }
 
 .signin-switch-signin-button:active {
-    color: #00bbbb;
+	color: #00bbbb;
 }
 
 .signin-error-message {
-    text-align: center;
-    font-size: 0.7em;
-    color: #ee3030;
-    margin-top: 1%;
-    margin-bottom: 1%;
+	text-align: center;
+	font-size: 0.7em;
+	color: #ee3030;
+	margin-top: 1%;
+	margin-bottom: 1%;
 }
 
 .signin-submit {
-    width: 40%;
-    margin-left: auto;
-    margin-right: auto;
+	width: 40%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.signin-to-signup {
+	width: 100%;
+	display: flex;
+}
+
+.signin-to-signup-button {
+	margin-left: auto;
+	font-size: 0.7em;
+	background: inherit;
+	border-style: inherit;
+}
+
+.signin-to-signup-button:hover {
+	color: #0000bb;
+}
+
+.signin-to-signup-button:active {
+	color: #00bbbb;
 }
