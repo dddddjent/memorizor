@@ -84,31 +84,34 @@ const SignIn = function() {
         <div className='flex-center'>
             <div className='signin-root'>
                 <div className='signin-title'>Sign In To Your Account</div>
+
                 <div className='signin-form'>
-                    <div className='signin-labels'>
-                        {!useEmail && <label className='signin-label'>User Name</label>}
-                        {useEmail && <label className='signin-label'>Email</label>}
-                        <label className='signin-label'>Password</label>
-                    </div>
-                    <div className='signin-inputs'>
-                        {!useEmail && <input
+                    {!useEmail && <div className='signin-row'>
+                        <label className='signin-label'>User Name</label>
+                        <input
                             type='text'
                             placeholder='Your user name'
                             value={userName}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 setUserName(e.target.value)
                             }}
-                            className='signin-label'
-                        ></input>}
-                        {useEmail && <input
+                            className='signin-input'
+                        ></input>
+                    </div>}
+                    {useEmail && <div className='signin-row'>
+                        <label className='signin-label'>Email</label>
+                        <input
                             type='text'
                             placeholder='Your email'
                             value={email}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 setEmail(e.target.value)
                             }}
-                            className='signin-label'
-                        ></input>}
+                            className='signin-input'
+                        ></input>
+                    </div>}
+                    <div className='signin-row'>
+                        <label className='signin-label'>Password</label>
                         <input
                             type='password'
                             placeholder='Your password'
@@ -116,7 +119,7 @@ const SignIn = function() {
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 setPassword(e.target.value)
                             }}
-                            className='signin-label'
+                            className='signin-input'
                         ></input>
                     </div>
                 </div>
