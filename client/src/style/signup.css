@@ -1,0 +1,51 @@
+.signup-root {
+	width: 40%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.signup-title {
+	text-align: center;
+	font-size: 2em;
+	margin-top: 2%;
+	margin-bottom: 4%;
+}
+
+.signup-form {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.signup-row {
+	width: 100%;
+	display: flex;
+}
+
+.signup-label {
+	width: 40%;
+	margin-top: 1%;
+	margin-bottom: 1%;
+	text-align: center;
+}
+
+.signup-input {
+	width: 60%;
+	margin-top: 1%;
+	margin-bottom: 1%;
+}
+
+.signup-error-message {
+	text-align: center;
+	font-size: 0.7em;
+	color: #ee3030;
+	margin-top: 1%;
+	margin-bottom: 1%;
+}
+
+.signup-submit {
+	width: 40%;
+	margin-left: auto;
+	margin-right: auto;
+}
