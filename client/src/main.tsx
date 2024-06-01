@@ -1,28 +1,26 @@
 import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, redirect, RouterProvider } from 'react-router-dom'
+import SignIn from './app/signin'
+import { generateURL } from './util'
+import config from './config'
 
 const router = createBrowserRouter([
-	{
-		path: '/',
-		element: (
-			<div>
-				111
-				<Outlet />
-			</div>
-		),
-		children: [
-			{
-				path: 'sub',
-				element: <div>2222</div>,
-			},
-		],
-	},
-	{
-		path: '/sss',
-		element: 123,
-	},
+    {
+        path: '/',
+        loader: () => {
+            return redirect(generateURL(config.host, "/dashboard"))
+        },
+    },
+    {
+        path: '/signin',
+        element: <SignIn />,
+    },
+    {
+        path: '/dashboard',
+        element: <div>111</div>,
+    },
 ])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-	<RouterProvider router={router} />,
+    <RouterProvider router={router} />,
 )
