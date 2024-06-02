@@ -1,3 +1,7 @@
+button:hover {
+    cursor: pointer;
+}
+
 .flex-center {
     display: flex;
     flex-direction: column;

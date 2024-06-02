@@ -1,0 +1,39 @@
+body {
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+}
+
+#root {
+	height: 100%;
+}
+
+#profile {
+	height: 100%;
+	display: flex;
+}
+
+#profile-sidebar {
+	width: 12rem;
+	display: flex;
+	flex-direction: column;
+	background-color: #dddddd;
+}
+
+#profile-detail {
+	flex: 1;
+}
+
+#profile-back {
+	margin-top: 0.5rem;
+	margin-bottom: 2rem;
+}
+
+.profile-sidebar-button {
+	margin-bottom: 0.6rem;
+    border: 0;
+}
+
+#profile-signout {
+	margin-top: auto;
+}
