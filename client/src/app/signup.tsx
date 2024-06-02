@@ -127,7 +127,14 @@ const SignUp = function () {
 			<div className='signup-root'>
 				<div className='signup-title'>Sign Up Your Account</div>
 
-				<div className='signup-form'>
+				<div
+					className='signup-form'
+					onKeyDownCapture={(e) => {
+						if (e.key === 'Enter') {
+							submit()
+						}
+					}}
+				>
 					<div className='signup-row'>
 						<label className='signup-label'>User Name</label>
 						<input

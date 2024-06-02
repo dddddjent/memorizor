@@ -90,7 +90,14 @@ const SignIn = function () {
 
 	return (
 		<div className='flex-center'>
-			<div className='signin-root'>
+			<div
+				className='signin-root'
+				onKeyDownCapture={(e) => {
+					if (e.key === 'Enter') {
+						submit()
+					}
+				}}
+			>
 				<div className='signin-title'>Sign In To Your Account</div>
 
 				<div className='signin-form'>
