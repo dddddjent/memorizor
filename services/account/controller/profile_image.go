@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"memorizor/services/account/model"
 	"memorizor/services/account/util"
 	"net/http"
@@ -23,6 +24,7 @@ func (ctrl *sController) profile_image(c *gin.Context) {
 	imageFileHeader, err := c.FormFile("image")
 	if err != nil {
 		err := util.NewBadRequest(err.Error())
+        log.Println(err.Error())
 		c.JSON(err.HttpStatus(), gin.H{
 			"error": err,
 		})
@@ -32,6 +34,7 @@ func (ctrl *sController) profile_image(c *gin.Context) {
 	imageType, err := util.ExtractImageType(imageTypeRaw)
 	if err != nil {
 		err := err.(*util.Error)
+        log.Println(err.Error())
 		c.JSON(err.HttpStatus(), gin.H{
 			"error": err,
 		})

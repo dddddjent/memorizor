@@ -6,6 +6,7 @@ import { asAxiosError, generateURL, tryRequest } from '../util'
 import { useNavigate } from 'react-router-dom'
 import axios, { AxiosResponse } from 'axios'
 import config from '../config'
+import Crop from './crop'
 
 type UpdateErrorData = {
     error: {
@@ -63,6 +64,7 @@ const ProfileInfo = function() {
         bio: '',
     })
     const [errorMessage, setErrorMessage] = useState('')
+    const [openCrop, setOpenCrop] = useState(false)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -130,6 +132,11 @@ const ProfileInfo = function() {
 
     return (
         <div className='flex-center'>
+            {openCrop && (
+                <Crop
+                    onClose={() => setOpenCrop(false)}
+                />
+            )}
             <div id='user-image-container'>
                 <img
                     id='user-image'
@@ -140,6 +147,7 @@ const ProfileInfo = function() {
                     }
                     alt='Profile Image'
                 />
+                <button onClick={() => setOpenCrop(true)}>Upload</button>
             </div>
             <div id='user-info'>
                 <div className='user-info-row'>

@@ -1,0 +1,7 @@
+#crop-page {
+	position: fixed;
+    transform: translateY(20vh);
+	width: 60vw;
+	height: 60vh;
+	background-color: #dddddd;
+}
