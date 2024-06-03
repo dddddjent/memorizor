@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"log"
 	"memorizor/services/account/model"
 	"memorizor/services/account/repository"
 	"memorizor/services/account/util"
@@ -60,6 +61,7 @@ func (service *sUserService) SignIn(user *model.User) error {
 	} else {
 		userFound, err = service.userRepo.FindByUserName(userName)
 	}
+    log.Println("User found")
 	if err != nil {
 		return util.NewAuthorization("No user found")
 	}
@@ -71,6 +73,7 @@ func (service *sUserService) SignIn(user *model.User) error {
 	if compareResult == false {
 		return util.NewAuthorization("Incorrect password")
 	}
+    log.Println("Correct password")
 	*user = *userFound
 	return nil
 }
@@ -87,6 +90,7 @@ func (s *sUserService) Update(id uuid.UUID, updateMap map[string]any) (*model.Us
 		if err != nil {
 			return nil, util.NewInternal("Could not encode the password")
 		}
+        updateMap["password"] = password
 	}
 	return s.userRepo.Update(id, updateMap)
 }
