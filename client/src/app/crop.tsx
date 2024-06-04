@@ -39,55 +39,71 @@ const Crop = function({ onClose }: CropProperties) {
         if (imageSrc === '#') {
             return
         }
-        let croppedData: Blob | null
         cropperRef.current?.cropper.getCroppedCanvas().toBlob((blob) => {
-            croppedData = blob
-        })
-        tryRequest(
-            async () => {
-                const formData = new FormData()
-                formData.append('image', croppedData as Blob)
-                const { data } = await axios.post(
-                    generateURL(config.api.account, '/profile_image'),
-                    formData,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
+            const croppedData = blob
+            tryRequest(
+                async () => {
+                    console.log(croppedData)
+                    const formData = new FormData()
+                    formData.append('image', croppedData as Blob)
+                    const { data } = await axios.post(
+                        generateURL(config.api.account, '/profile_image'),
+                        formData,
+                        {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
                         },
-                    },
-                )
-                console.log(data)
-                location.reload()
-                setImageSrc('#')
-            },
-            (error) => {
-                console.log(error)
-            },
-            navigate,
-        )
+                    )
+                    console.log(data)
+                    location.reload()
+                    setImageSrc('#')
+                },
+                (error) => {
+                    console.log(error)
+                },
+                navigate,
+            )
+        })
     }
 
     return (
         <div id='crop-page'>
-            <div>
+            <div id='crop-topbar'>
                 <input
                     type='file'
                     accept='image/png,image/jpg,image/jpeg'
                     onChange={handleInputFileChange}
                 />
-                <button onClick={onClose}>Close</button>
+                <button id='crop-close-button' onClick={onClose}>
+                    Close
+                </button>
             </div>
-            <div>
-                <Cropper
-                    ref={cropperRef}
-                    style={{ width: '20%' }}
-                    zoomTo={0.1}
-                    initialAspectRatio={1}
-                    preview='.img-preview'
-                    src={imageSrc}
-                />
+            <div className='image-area'>
+                <div className='cropper'>
+                    <Cropper
+                        ref={cropperRef}
+                        style={{ aspectRatio: '1/1', height: '100%' }}
+                        zoomTo={0.1}
+                        aspectRatio={1}
+                        preview='.img-preview'
+                        background={false}
+                        src={imageSrc}
+                    />
+                </div>
+                <div className='preview'>
+                    <div
+                        className='img-preview'
+                        style={{
+                            width: '100%',
+                            borderRadius: '50%',
+                            aspectRatio: '1/1',
+                            margin: '0',
+                        }}
+                    />
+                </div>
             </div>
-            <div>
+            <div id='crop-upload-button'>
                 <button onClick={handleUpload}>Upload</button>
             </div>
         </div>

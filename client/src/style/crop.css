@@ -1,7 +1,51 @@
 #crop-page {
 	position: fixed;
-    transform: translateY(20vh);
+	transform: translateY(20vh);
 	width: 60vw;
 	height: 60vh;
 	background-color: #dddddd;
+	display: flex;
+	flex-direction: column;
+}
+
+#crop-topbar {
+	display: flex;
+}
+
+#crop-close-button {
+	margin-left: auto;
+}
+
+.img-preview {
+	overflow: hidden;
+}
+
+.image-area {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 70%;
+}
+
+.cropper {
+	margin: 2%;
+	height: 100%;
+	aspect-ratio: 1/1;
+}
+
+.preview {
+	margin: 2%;
+	height: 100%;
+	aspect-ratio: 1/1;
+}
+
+.cropper-crop-box,
+.cropper-view-box {
+	border-radius: 50%;
+}
+
+#crop-upload-button {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: auto;
 }

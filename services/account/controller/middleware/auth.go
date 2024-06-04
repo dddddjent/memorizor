@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"bytes"
+	"io"
 	"log"
 	"memorizor/services/account/controller/validate"
 	"memorizor/services/account/services"
@@ -10,7 +12,7 @@ import (
 )
 
 type authHeader struct {
-    AccessToken string `header:"Authorization"`
+	AccessToken string `header:"Authorization"`
 }
 
 func AuthUser(s services.ITokenService) gin.HandlerFunc {
@@ -21,6 +23,8 @@ func AuthUser(s services.ITokenService) gin.HandlerFunc {
 			return
 		}
 
+		byteBody, _ := io.ReadAll(ctx.Request.Body)
+		ctx.Request.Body = io.NopCloser(bytes.NewBuffer(byteBody))
 		rawTokenString := header.AccessToken
 		tokenString := rawTokenString[7:]
 		log.Println(tokenString)

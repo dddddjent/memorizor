@@ -9,6 +9,7 @@ services:
       - account
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./data/logs:/var/log/nginx/
 
   account:
     build:
