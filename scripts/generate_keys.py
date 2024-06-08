@@ -1,4 +1,4 @@
-# Run at the account root!
+# Run at the app root!
 
 import os
 
@@ -20,7 +20,7 @@ _ = os.popen(
     % (generate_dir, name, generate_dir, name)
 ).read()
 
-link_dirs = ["./services/account/keys"]
+link_dirs = ["./services/account/keys", "./services/word/keys"]
 for dir in link_dirs:
     if not os.path.exists(dir):
         os.makedirs(dir)

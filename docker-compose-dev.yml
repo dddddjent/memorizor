@@ -26,6 +26,21 @@ services:
       - postgres-users
       - redis-tokens
     command: reflex -r "\.go$$" -s -- sh -c "go run ."
+      
+  word:
+    build:
+      context: ./services/word
+      target: compiler
+    image: memorizor/services-word-src
+    env_file: ./.env.dev
+    expose:
+      - 8080
+    volumes:
+      - ./services/word/:/src
+      - ./keys/:/keys
+    depends_on:
+      - account
+    command: reflex -r "\.go$$" -s -- sh -c "go run ."
 
   postgres-users:
     image: 'postgres:latest'
