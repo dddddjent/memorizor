@@ -25,8 +25,8 @@ type Config struct {
 
 func NewController(config *Config) *sController {
 	ctrl := &sController{
-		router: config.Router,
-        tokenService: config.TokenService,
+		router:       config.Router,
+		tokenService: config.TokenService,
 	}
 
 	rootGroup := ctrl.router.Group(config.BaseURL)
@@ -37,17 +37,8 @@ func NewController(config *Config) *sController {
 	}
 	{
 		rootGroup.GET("/page", func(c *gin.Context) {
-			userAny, exists := c.Get("user")
-			if !exists {
-				err := util.NewBadRequest("No user info found in the request")
-				c.JSON(err.HttpStatus(), gin.H{
-					"error": err,
-				})
-				return
-			}
-			user := userAny.(*model.User)
 			c.JSON(http.StatusOK, gin.H{
-				"user": user,
+				"word_card": model.WordCard{},
 			})
 		})
 	}
