@@ -12,10 +12,7 @@ import (
 func (ctrl *sController) today(c *gin.Context) {
 	userAny, exists := c.Get("user")
 	if !exists {
-		err := util.NewBadRequest("No user info found in the request")
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
+		util.ResponseDefaultError(c, util.NewBadRequest("No user info found in the request"))
 		return
 	}
 	user := userAny.(*model.User)

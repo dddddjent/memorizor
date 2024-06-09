@@ -13,11 +13,8 @@ import (
 func (ctrl *sController) list(c *gin.Context) {
 	page, err := strconv.ParseInt(c.Param("page"), 10, 64)
 	if err != nil {
-		err := util.NewBadRequest(err.Error())
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
-        return 
+		util.ResponseDefaultError(c, util.NewBadRequest(err.Error()))
+		return
 	}
 	log.Println("Page: ", page)
 	method := c.Query("method")
@@ -25,10 +22,7 @@ func (ctrl *sController) list(c *gin.Context) {
 
 	userAny, exists := c.Get("user")
 	if !exists {
-		err := util.NewBadRequest("No user info found in the request")
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
+		util.ResponseDefaultError(c, util.NewBadRequest("No user info found in the request"))
 		return
 	}
 	user := userAny.(*model.User)
@@ -37,10 +31,7 @@ func (ctrl *sController) list(c *gin.Context) {
 
 	wordList, err := ctrl.wordService.AllWords(id, method, page)
 	if err != nil {
-		err := err.(*util.Error)
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
+		util.ResponseDefaultError(c, err)
 		return
 	}
 

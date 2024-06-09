@@ -20,10 +20,7 @@ type wordRequest struct {
 func (ctrl *sController) word(c *gin.Context) {
 	userAny, exists := c.Get("user")
 	if !exists {
-		err := util.NewBadRequest("No user info found in the request")
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
+		util.ResponseDefaultError(c, util.NewBadRequest("No user info found in the request"))
 		return
 	}
 	user := userAny.(*model.User)
@@ -51,10 +48,7 @@ func (ctrl *sController) word(c *gin.Context) {
 		}
 	default:
 		{
-			err := util.NewBadRequest("Unknown method")
-			c.JSON(err.HttpStatus(), gin.H{
-				"error": err,
-			})
+			util.ResponseDefaultError(c, util.NewBadRequest("Unknown method"))
 			return
 		}
 	}
@@ -122,42 +116,27 @@ func (ctrl *sController) setWord(c *gin.Context, userID uuid.UUID, param map[str
 	word := &model.Word{}
 	word.Word, err = parse(param, "word")
 	if err != nil {
-		err := err.(*util.Error)
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
+		util.ResponseDefaultError(c, err)
 		return
 	}
 	word.Word, err = formatWord(word.Word)
 	if err != nil {
-		err := err.(*util.Error)
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
+		util.ResponseDefaultError(c, err)
 		return
 	}
 	word.Explanation, err = parse(param, "explanation")
 	if err != nil {
-		err := err.(*util.Error)
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
+		util.ResponseDefaultError(c, err)
 		return
 	}
 	word.URL, err = parse(param, "url")
 	if err != nil {
-		err := err.(*util.Error)
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
+		util.ResponseDefaultError(c, err)
 		return
 	}
 
 	if err := ctrl.wordService.SetWord(userID, word); err != nil {
-		err := err.(*util.Error)
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
+		util.ResponseDefaultError(c, err)
 		return
 	}
 
@@ -174,10 +153,7 @@ func (ctrl *sController) deleteWord(c *gin.Context, userID uuid.UUID, param map[
 	}
 	wordID := uuid.FromStringOrNil(wordIDString)
 	if wordID == uuid.Nil {
-		err := util.NewBadRequest("Could not parse uuid")
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
+		util.ResponseDefaultError(c, util.NewBadRequest("Could not parse uuid"))
 		return
 	}
 
@@ -199,10 +175,7 @@ func (ctrl *sController) clickWord(c *gin.Context, userID uuid.UUID, param map[s
 	}
 	wordID := uuid.FromStringOrNil(wordIDString)
 	if wordID == uuid.Nil {
-		err := util.NewBadRequest("Could not parse uuid")
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
+		util.ResponseDefaultError(c, util.NewBadRequest("Could not parse uuid"))
 		return
 	}
 

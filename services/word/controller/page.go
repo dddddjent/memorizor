@@ -12,10 +12,7 @@ import (
 func (ctrl *sController) page(c *gin.Context) {
 	userAny, exists := c.Get("user")
 	if !exists {
-		err := util.NewBadRequest("No user info found in the request")
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
+		util.ResponseDefaultError(c, util.NewBadRequest("No user info found in the request"))
 		return
 	}
 	user := userAny.(*model.User)
@@ -24,10 +21,7 @@ func (ctrl *sController) page(c *gin.Context) {
 
 	pageCnt, err := ctrl.wordService.CountPage(id)
 	if err != nil {
-		err := err.(*util.Error)
-		c.JSON(err.HttpStatus(), gin.H{
-			"error": err,
-		})
+		util.ResponseDefaultError(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
