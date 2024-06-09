@@ -16,4 +16,5 @@ type IWordService interface {
 	SetWord(userID uuid.UUID, word *model.Word) error
 	DeleteWord(userID uuid.UUID, wordID uuid.UUID) error
 	ClickWord(userID uuid.UUID, wordID uuid.UUID) error
+	WordsToday(userID uuid.UUID) ([][]model.Word, error)
 }

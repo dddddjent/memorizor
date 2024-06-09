@@ -13,5 +13,6 @@ type IWordRepository interface {
 	SetWord(userID uuid.UUID, word *model.Word) error
 	DeleteWord(userID uuid.UUID, wordID uuid.UUID) error
 	UpdateClickedAt(userID uuid.UUID, wordID uuid.UUID, newTime time.Time) error
-    // OldestWord(userID uuid.UUID) (time.Time, error)
+	OldestCreatedTime(userID uuid.UUID) (time.Time, error)
+	WordsInRange(userID uuid.UUID, start time.Time, end time.Time) ([]model.Word, error)
 }

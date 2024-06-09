@@ -40,6 +40,7 @@ func NewController(config *Config) *sController {
 		rootGroup.GET("/list/:page", ctrl.list)
 		rootGroup.GET("/page", ctrl.page)
 		rootGroup.POST("/word", ctrl.word)
+		rootGroup.GET("/today", ctrl.today)
 	}
 
 	return ctrl

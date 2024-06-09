@@ -75,3 +75,27 @@ func (r *sWordRepository) UpdateClickedAt(userID uuid.UUID, wordID uuid.UUID, ne
 	r.db.Model(&model.Word{}).Where("id = ?", wordID).Update("clicked_at", newTime)
 	return nil
 }
+
+func (r *sWordRepository) OldestCreatedTime(userID uuid.UUID) (time.Time, error) {
+	words := []model.Word{}
+	r.db.Where("user_id = ?", userID).
+		Order("created_at ASC").
+		Limit(1).
+		Find(&words)
+	if len(words) == 0 {
+		return time.Now(), fmt.Errorf("This user has no word")
+	} else {
+		return words[0].CreatedAt, nil
+	}
+}
+
+func (r *sWordRepository) WordsInRange(userID uuid.UUID, start time.Time, end time.Time) ([]model.Word, error) {
+	words := []model.Word{}
+	r.db.Where("user_id = ?", userID).
+		Order("word ASC").
+		Where("created_at >= ?", start).
+		Where("created_at < ?", end).
+		Find(&words)
+    
+	return words, nil
+}
