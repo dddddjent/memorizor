@@ -3,6 +3,8 @@ package util
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type ErrorType string
@@ -111,4 +113,11 @@ func NewServiceUnavailable() *Error {
 		Type:    ServiceUnavailableError,
 		Message: "Service unavailable or timed out",
 	}
+}
+
+func ResponseDefaultError(c *gin.Context, err error) {
+    appError := err.(*Error)
+	c.JSON(appError.HttpStatus(), gin.H{
+		"error": appError,
+	})
 }

@@ -5,6 +5,7 @@ import (
 	"memorizor/services/word/model"
 	"memorizor/services/word/repository"
 	"memorizor/services/word/util"
+	"time"
 
 	"github.com/gofrs/uuid"
 )
@@ -52,4 +53,12 @@ func (s *sWordService) CountPage(userID uuid.UUID) (pageCnt int64, err error) {
 
 func (s *sWordService) SetWord(userID uuid.UUID, word *model.Word) error {
 	return s.wordRepo.SetWord(userID, word)
+}
+
+func (s *sWordService) DeleteWord(userID uuid.UUID, wordID uuid.UUID) error {
+	return s.wordRepo.DeleteWord(userID, wordID)
+}
+
+func (s *sWordService) ClickWord(userID uuid.UUID, wordID uuid.UUID) error {
+	return s.wordRepo.UpdateClickedAt(userID, wordID, time.Now())
 }

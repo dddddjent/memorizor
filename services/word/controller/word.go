@@ -41,6 +41,14 @@ func (ctrl *sController) word(c *gin.Context) {
 		{
 			ctrl.setWord(c, id, body.Parameters)
 		}
+	case "delete":
+		{
+			ctrl.deleteWord(c, id, body.Parameters)
+		}
+	case "click":
+		{
+			ctrl.clickWord(c, id, body.Parameters)
+		}
 	default:
 		{
 			err := util.NewBadRequest("Unknown method")
@@ -52,13 +60,27 @@ func (ctrl *sController) word(c *gin.Context) {
 	}
 }
 
+func parse(param map[string]any, field string) (string, error) {
+	value, exists := param[field]
+	if !exists {
+		err := util.NewBadRequest(field + " needs to be specified")
+		return "", err
+	}
+	value_string, ok := value.(string)
+	if !ok {
+		err := util.NewBadRequest(fmt.Sprintf("Could not parse %s parameter", field))
+		return "", err
+	}
+	return value_string, nil
+}
+
 type setParameters struct {
 	Word        string `json:"word"`
 	Explanation string `json:"explanation"`
 	URL         string `json:"url"`
 }
 
-func formatWord(word string) (string, *util.Error) {
+func formatWord(word string) (string, error) {
 	if word == "" {
 		return "", util.NewBadRequest("No empty word")
 	}
@@ -96,24 +118,11 @@ func formatWord(word string) (string, *util.Error) {
 }
 
 func (ctrl *sController) setWord(c *gin.Context, userID uuid.UUID, param map[string]any) {
-	parse := func(field string) (string, *util.Error) {
-		value, exists := param[field]
-		if !exists {
-			err := util.NewBadRequest(field + " needs to be specified")
-			return "", err
-		}
-		value_string, ok := value.(string)
-		if !ok {
-			err := util.NewBadRequest(fmt.Sprintf("Could not parse %s parameter", field))
-			return "", err
-		}
-		return value_string, nil
-	}
-
-	err := (*util.Error)(nil)
+	err := (error)(nil)
 	word := &model.Word{}
-	word.Word, err = parse("word")
+	word.Word, err = parse(param, "word")
 	if err != nil {
+		err := err.(*util.Error)
 		c.JSON(err.HttpStatus(), gin.H{
 			"error": err,
 		})
@@ -121,20 +130,23 @@ func (ctrl *sController) setWord(c *gin.Context, userID uuid.UUID, param map[str
 	}
 	word.Word, err = formatWord(word.Word)
 	if err != nil {
+		err := err.(*util.Error)
 		c.JSON(err.HttpStatus(), gin.H{
 			"error": err,
 		})
 		return
 	}
-	word.Explanation, err = parse("explanation")
+	word.Explanation, err = parse(param, "explanation")
 	if err != nil {
+		err := err.(*util.Error)
 		c.JSON(err.HttpStatus(), gin.H{
 			"error": err,
 		})
 		return
 	}
-	word.URL, err = parse("url")
+	word.URL, err = parse(param, "url")
 	if err != nil {
+		err := err.(*util.Error)
 		c.JSON(err.HttpStatus(), gin.H{
 			"error": err,
 		})
@@ -149,6 +161,56 @@ func (ctrl *sController) setWord(c *gin.Context, userID uuid.UUID, param map[str
 		return
 	}
 
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}
+
+func (ctrl *sController) deleteWord(c *gin.Context, userID uuid.UUID, param map[string]any) {
+	wordIDString, err := parse(param, "id")
+	if err != nil {
+		util.ResponseDefaultError(c, err)
+		return
+	}
+	wordID := uuid.FromStringOrNil(wordIDString)
+	if wordID == uuid.Nil {
+		err := util.NewBadRequest("Could not parse uuid")
+		c.JSON(err.HttpStatus(), gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	err = ctrl.wordService.DeleteWord(userID, wordID)
+	if err != nil {
+		util.ResponseDefaultError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}
+
+func (ctrl *sController) clickWord(c *gin.Context, userID uuid.UUID, param map[string]any) {
+	wordIDString, err := parse(param, "id")
+	if err != nil {
+		util.ResponseDefaultError(c, err)
+		return
+	}
+	wordID := uuid.FromStringOrNil(wordIDString)
+	if wordID == uuid.Nil {
+		err := util.NewBadRequest("Could not parse uuid")
+		c.JSON(err.HttpStatus(), gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	err = ctrl.wordService.ClickWord(userID, wordID)
+	if err != nil {
+		util.ResponseDefaultError(c, err)
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
 	})

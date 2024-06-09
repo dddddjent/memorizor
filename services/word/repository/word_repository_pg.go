@@ -5,6 +5,7 @@ import (
 	"log"
 	"memorizor/services/word/model"
 	"memorizor/services/word/util"
+	"time"
 
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
@@ -52,5 +53,25 @@ func (r *sWordRepository) SetWord(userID uuid.UUID, word *model.Word) error {
 		r.db.Where("word = ?", word.Word).First(word)
 		r.db.Model(word).Where("word = ?", word.Word).Update("clicked_at", word.CreatedAt)
 	}
+	return nil
+}
+
+func (r *sWordRepository) DeleteWord(userID uuid.UUID, wordID uuid.UUID) error {
+	count := int64(0)
+	r.db.Model(&model.Word{}).Where("id = ?", wordID).Count(&count)
+	if count == 0 {
+		return util.NewBadRequest("Could not find this word")
+	}
+	r.db.Delete(&model.Word{}, wordID)
+	return nil
+}
+
+func (r *sWordRepository) UpdateClickedAt(userID uuid.UUID, wordID uuid.UUID, newTime time.Time) error {
+	count := int64(0)
+	r.db.Model(&model.Word{}).Where("id = ?", wordID).Count(&count)
+	if count == 0 {
+		return util.NewBadRequest("Could not find this word")
+	}
+	r.db.Model(&model.Word{}).Where("id = ?", wordID).Update("clicked_at", newTime)
 	return nil
 }
