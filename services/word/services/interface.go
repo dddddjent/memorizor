@@ -11,5 +11,7 @@ type ITokenService interface {
 }
 
 type IWordService interface {
-	AllWords(userID uuid.UUID, method string, page int64) ([]model.WordCard, error)
+	AllWords(userID uuid.UUID, method string, page int64) ([]model.Word, error)
+	CountPage(userID uuid.UUID) (pageCnt int64, err error)
+	SetWord(userID uuid.UUID, word *model.Word) error
 }

@@ -26,9 +26,9 @@ func NewSWordService(config *SWordServiceConfig) IWordService {
 	}
 }
 
-func (s *sWordService) AllWords(userID uuid.UUID, method string, page int64) ([]model.WordCard, error) {
+func (s *sWordService) AllWords(userID uuid.UUID, method string, page int64) ([]model.Word, error) {
 	if page < 1 {
-		return []model.WordCard{}, util.NewBadRequest(fmt.Sprintf("Invalid page number %d", page))
+		return []model.Word{}, util.NewBadRequest(fmt.Sprintf("Invalid page number %d", page))
 	}
 
 	var orderMethod string
@@ -38,9 +38,18 @@ func (s *sWordService) AllWords(userID uuid.UUID, method string, page int64) ([]
 	case "alphabetic":
 		orderMethod = "word"
 	default:
-		return []model.WordCard{}, util.NewBadRequest("Incorrect ordering method")
+		return []model.Word{}, util.NewBadRequest("Incorrect ordering method")
 	}
-	// pageCnt := (s.wordRepo.CountAllWords(userID))/int64(s.pageLength) + 1
+
 	offset := (page - 1) * s.pageLength
 	return s.wordRepo.AllWords(userID, orderMethod, offset, s.pageLength), nil
+}
+
+func (s *sWordService) CountPage(userID uuid.UUID) (pageCnt int64, err error) {
+	pageCnt = (s.wordRepo.CountAllWords(userID))/int64(s.pageLength) + 1
+	return pageCnt, nil
+}
+
+func (s *sWordService) SetWord(userID uuid.UUID, word *model.Word) error {
+	return s.wordRepo.SetWord(userID, word)
 }

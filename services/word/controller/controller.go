@@ -2,10 +2,8 @@ package controller
 
 import (
 	"memorizor/services/word/controller/middleware"
-	"memorizor/services/word/model"
 	"memorizor/services/word/services"
 	"memorizor/services/word/util"
-	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -39,12 +37,9 @@ func NewController(config *Config) *sController {
 		rootGroup.Use(middleware.AuthUser(ctrl.tokenService))
 	}
 	{
-		rootGroup.GET("/page", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{
-				"word_card": model.WordCard{},
-			})
-		})
 		rootGroup.GET("/list/:page", ctrl.list)
+		rootGroup.GET("/page", ctrl.page)
+		rootGroup.POST("/word", ctrl.word)
 	}
 
 	return ctrl

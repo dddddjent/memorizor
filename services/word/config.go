@@ -26,7 +26,7 @@ func generateDataSources() map[string]any {
 	if err != nil {
 		panic("Could not connect to Postgres")
 	}
-	postgresDB.AutoMigrate(&model.WordCard{})
+	postgresDB.AutoMigrate(&model.Word{})
 
 	return map[string]any{
 		"postgres": postgresDB,

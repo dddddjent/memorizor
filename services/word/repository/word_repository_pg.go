@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"memorizor/services/word/model"
+	"memorizor/services/word/util"
 
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
@@ -17,8 +18,8 @@ func NewSWordRepositoryPG(db *gorm.DB) IWordRepository {
 	return &sWordRepository{db: db}
 }
 
-func (r *sWordRepository) AllWords(userID uuid.UUID, method string, offset int64, pageLength int64) []model.WordCard {
-	words := []model.WordCard{}
+func (r *sWordRepository) AllWords(userID uuid.UUID, method string, offset int64, pageLength int64) []model.Word {
+	words := []model.Word{}
 	r.db.Where("user_id = ?", userID).
 		Order(fmt.Sprintf("%s ASC", method)).
 		Offset(int(offset)).Limit(int(pageLength)).
@@ -28,7 +29,28 @@ func (r *sWordRepository) AllWords(userID uuid.UUID, method string, offset int64
 
 func (r *sWordRepository) CountAllWords(userID uuid.UUID) int64 {
 	wordCnt := int64(0)
-	r.db.Model(&model.WordCard{}).Where("user_id = ?", userID).Count(&wordCnt)
+	r.db.Model(&model.Word{}).Where("user_id = ?", userID).Count(&wordCnt)
 	log.Println("Words: ", wordCnt)
 	return wordCnt
+}
+
+func (r *sWordRepository) SetWord(userID uuid.UUID, word *model.Word) error {
+	if word == nil {
+		return util.NewInternal("word is nil")
+	}
+
+	count := int64(0)
+	r.db.Model(word).Where("user_id = ?", userID).Where("word = ?", word.Word).Count(&count)
+	if count != 0 {
+		r.db.Model(word).Where("word = ?", word.Word).Updates(map[string]any{
+			"explanation": word.Explanation,
+			"url":         word.URL,
+		})
+	} else {
+		word.UserID = userID
+		r.db.Create(word)
+		r.db.Where("word = ?", word.Word).First(word)
+		r.db.Model(word).Where("word = ?", word.Word).Update("clicked_at", word.CreatedAt)
+	}
+	return nil
 }
