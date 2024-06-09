@@ -14,6 +14,7 @@ import (
 type sController struct {
 	router       *gin.Engine
 	tokenService services.ITokenService
+	wordService  services.IWordService
 }
 
 type Config struct {
@@ -21,12 +22,14 @@ type Config struct {
 	BaseURL      string
 	Timeout      int64
 	TokenService services.ITokenService
+	WordService  services.IWordService
 }
 
 func NewController(config *Config) *sController {
 	ctrl := &sController{
 		router:       config.Router,
 		tokenService: config.TokenService,
+		wordService:  config.WordService,
 	}
 
 	rootGroup := ctrl.router.Group(config.BaseURL)
@@ -41,6 +44,7 @@ func NewController(config *Config) *sController {
 				"word_card": model.WordCard{},
 			})
 		})
+		rootGroup.GET("/list/:page", ctrl.list)
 	}
 
 	return ctrl

@@ -2,6 +2,7 @@ package services
 
 import (
 	"crypto/rsa"
+	"log"
 	"memorizor/services/word/model"
 	"memorizor/services/word/util"
 )
@@ -27,6 +28,7 @@ func NewSTokenService(config *STokenServiceConfig) ITokenService {
 
 func (s *sTokenService) ValidateAccessToken(tokenString string) (*model.User, error) {
 	user, err := util.ValidateAccessToken(tokenString, s.publicKey)
+    log.Println("Valid access token")
 	if err != nil {
 		return nil, err
 	}

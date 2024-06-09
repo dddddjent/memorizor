@@ -12,7 +12,7 @@ import (
 )
 
 type authHeader struct {
-	AccessToken string `header:"Authorization"`
+    AccessToken string `header:"Authorization" binding:"required"`
 }
 
 func AuthUser(s services.ITokenService) gin.HandlerFunc {
