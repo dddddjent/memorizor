@@ -3,22 +3,22 @@ import '../../style/dashboard.css'
 import anonymouImageURL from '../../assets/anonymous.png'
 import { useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { generateURL, tryRequest } from '../../util'
+import {
+    generateURL,
+    tryRequest,
+    useAppDispatch,
+    useAppSelector,
+} from '../../util'
 import axios from 'axios'
 import config from '../../config'
-import Detail, { DetailInterface } from './detail'
-
-export type DetailState = Omit<DetailInterface, 'onClose'>
+import Detail from './detail'
+import { close as closeDetail, selectDetail } from './detail_slice'
 
 const Dashboard = function() {
     const [page, setPage] = useState<'today' | 'all'>('today')
     const [profileImgURL, setProfileImgURL] = useState('')
-    const [detailParams, setDetailParams] = useState<DetailState>({
-        show: true,
-        word: { word: 'A', explanation: 'BBBBBB', url: 'www.a.com' },
-        editable: { word: true, explanation: true, url: true },
-        // editable: { word: false, explanation: false, url: false},
-    })
+    const detail = useAppSelector(selectDetail)
+    const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -70,12 +70,12 @@ const Dashboard = function() {
             <div id='board'>
                 <Outlet />
             </div>
-            {detailParams.show && (
+            {detail.show && (
                 <Detail
-                    show={detailParams.show}
-                    word={detailParams.word}
-                    editable={detailParams.editable}
-                    onClose={() => setDetailParams({ ...detailParams, show: false })}
+                    show={detail.show}
+                    word={detail.word}
+                    editable={detail.editable}
+                    onClose={() => dispatch(closeDetail())}
                 />
             )}
         </div>
