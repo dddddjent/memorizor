@@ -9,6 +9,8 @@ import Profile from './app/account/profile'
 import ProfileInfo from './app/account/profile_info'
 import ProfileAccount from './app/account/profile_account'
 import AllWords from './app/dashboard/all_words/all_words'
+import { Provider } from 'react-redux'
+import { configureStore } from '@reduxjs/toolkit'
 
 const router = createBrowserRouter([
     {
@@ -63,6 +65,12 @@ const router = createBrowserRouter([
     },
 ])
 
+export const store = configureStore({
+    reducer: {},
+})
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <RouterProvider router={router} />,
+    <Provider store={store}>
+        <RouterProvider router={router} />,
+    </Provider>,
 )

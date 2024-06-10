@@ -77,9 +77,8 @@ function AllWords() {
 
     const list = words.map((value, index) => {
         return (
-            <div>
+            <div key={value.id}>
                 <WordLine
-                    key={value.id}
                     word={{
                         id: value.id,
                         index: index,
