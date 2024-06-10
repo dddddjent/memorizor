@@ -1,9 +1,9 @@
-import '../style/util.css'
-import '../style/signin.css'
+import '../../style/util.css'
+import '../../style/signin.css'
 import { useState } from 'react'
 import axios from 'axios'
-import config from '../config'
-import { asAxiosError, generateURL } from '../util'
+import config from '../../config'
+import { asAxiosError, generateURL } from '../../util'
 import { useNavigate } from 'react-router-dom'
 
 export type SignInResponse = {

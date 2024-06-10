@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import '../style/util.css'
-import '../style/user.css'
-import anonymouImageURL from '../assets/anonymous.png'
-import { asAxiosError, generateURL, tryRequest } from '../util'
+import '../../style/util.css'
+import '../../style/user.css'
+import anonymouImageURL from '../../assets/anonymous.png'
+import { asAxiosError, generateURL, tryRequest } from '../../util'
 import { useNavigate } from 'react-router-dom'
 import axios, { AxiosResponse } from 'axios'
-import config from '../config'
+import config from '../../config'
 
 type UpdateErrorData = {
     error: {

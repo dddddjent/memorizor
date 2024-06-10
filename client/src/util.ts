@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import { NavigateFunction } from 'react-router-dom'
 import config from './config'
+import { CSSProperties } from 'react'
 
 export function generateURL(api: string, path: string): string {
     return api + path
@@ -76,4 +77,13 @@ export async function tryRequest(
             processError(err)
         }
     })
+}
+
+export const leftAlignedPosition = (percentage: number): CSSProperties => {
+    return {
+        position: 'absolute',
+        left: percentage.toString() + '%',
+        top: '50%',
+        transform: 'translate(0%, -50%)',
+    }
 }

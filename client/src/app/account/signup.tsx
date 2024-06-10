@@ -1,9 +1,9 @@
-import '../style/util.css'
-import '../style/signup.css'
+import '../../style/util.css'
+import '../../style/signup.css'
 import { useState } from 'react'
 import axios, { AxiosResponse } from 'axios'
-import config from '../config'
-import { asAxiosError, generateURL } from '../util'
+import config from '../../config'
+import { asAxiosError, generateURL } from '../../util'
 import { useNavigate } from 'react-router-dom'
 
 type SignUpResponse = {

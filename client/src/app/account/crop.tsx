@@ -1,11 +1,11 @@
 import React, { createRef, useState } from 'react'
-import '../style/crop.css'
+import '../../style/crop.css'
 import Cropper, { ReactCropperElement } from 'react-cropper'
 import 'cropperjs/dist/cropper.css'
-import { asAxiosError, generateURL, tryRequest } from '../util'
+import { asAxiosError, generateURL, tryRequest } from '../../util'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import config from '../config'
+import config from '../../config'
 
 export interface CropProperties {
 	onClose: () => void

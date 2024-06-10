@@ -1,10 +1,10 @@
 import { Outlet, useNavigate } from 'react-router-dom'
-import '../style/util.css'
-import '../style/profile.css'
+import '../../style/util.css'
+import '../../style/profile.css'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { generateURL, tryRequest } from '../util'
-import config from '../config'
+import { generateURL, tryRequest } from '../../util'
+import config from '../../config'
 
 const Profile = function () {
 	const navigate = useNavigate()
