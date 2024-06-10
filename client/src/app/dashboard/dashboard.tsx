@@ -53,7 +53,7 @@ const Dashboard = function() {
         <div id='profile-root'>
             <div id='titlebar'>
                 <button id='titlebar-change-button' onClick={handlePageChange}>
-                    All Words
+                    {page == 'today' ? 'All Words' : 'Today'}
                 </button>
                 <div className='absolute-center-child'>
                     <span id='title'>Word Memeorizer</span>
