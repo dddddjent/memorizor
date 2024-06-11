@@ -3,16 +3,13 @@ import '../../style/dashboard.css'
 import anonymouImageURL from '../../assets/anonymous.png'
 import { useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import {
-	generateURL,
-	tryRequest,
-} from '../../util'
+import { generateURL, tryRequest } from '../../util'
 import axios from 'axios'
 import config from '../../config'
 
 const Dashboard = function () {
 	const [page, setPage] = useState<'today' | 'all'>('today')
-	const [profileImgURL, setProfileImgURL] = useState('')
+	const [, setProfileImgURL] = useState('')
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -27,6 +24,7 @@ const Dashboard = function () {
 					},
 				} = await axios.get(generateURL(config.api.account, '/me'))
 				setProfileImgURL(profile_image_url)
+				localStorage.setItem('profile_image', profile_image_url)
 			},
 			(error) => console.log(error),
 			navigate,
@@ -43,6 +41,11 @@ const Dashboard = function () {
 		}
 	}
 
+	const image_url =
+		localStorage.getItem('profile_image') === null
+			? ''
+			: (localStorage.getItem('profile_image') as string)
+
 	return (
 		<div id='profile-root'>
 			<div id='titlebar'>
@@ -55,7 +58,7 @@ const Dashboard = function () {
 				<button id='titlebar-button' onClick={() => navigate('/profile')}>
 					<img
 						id='titlebar-img'
-						src={profileImgURL === '' ? anonymouImageURL : profileImgURL}
+						src={image_url === '' ? anonymouImageURL : image_url}
 						alt='Profile Image'
 					/>
 				</button>
