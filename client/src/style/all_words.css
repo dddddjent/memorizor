@@ -47,7 +47,7 @@
 #main-content {
     margin-top: 1rem;
     width: 100%;
-    padding-bottom: 1rem;
+    padding-bottom: 0.5rem;
 }
 
 #word-line-container {
@@ -75,6 +75,7 @@
 
 #page-selector {
     width: 100%;
+    margin-bottom: 0.5rem;
 }
 
 .page-list-container>span {

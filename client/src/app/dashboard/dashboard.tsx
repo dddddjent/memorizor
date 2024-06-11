@@ -2,13 +2,21 @@ import '../../style/util.css'
 import '../../style/dashboard.css'
 import anonymouImageURL from '../../assets/anonymous.png'
 import { useEffect, useState } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
-import { generateURL, tryRequest } from '../../util'
+import { Outlet, useLoaderData, useNavigate } from 'react-router-dom'
+import { LoaderData, generateURL, tryRequest } from '../../util'
 import axios from 'axios'
 import config from '../../config'
+import { dashboardLoader } from './dashboard_loader'
 
 const Dashboard = function () {
-	const [page, setPage] = useState<'today' | 'all'>('today')
+	const currentURL = useLoaderData() as LoaderData<typeof dashboardLoader>
+	const splitted = currentURL.split('/')
+	const lastPartofURL = splitted[splitted.length - 1]
+	const [page, setPage] = useState<'today' | 'all'>(
+		lastPartofURL === 'today' || lastPartofURL === 'all'
+			? lastPartofURL
+			: 'today',
+	)
 	const [, setProfileImgURL] = useState('')
 	const navigate = useNavigate()
 

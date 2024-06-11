@@ -20,6 +20,14 @@ export default function PageSelector(info: PageSelectorInfo) {
 						onClick={() => {
 							info.onPageChange(i)
 						}}
+						style={
+							info.page == i
+								? {
+										color: 'red',
+										// eslint-disable-next-line no-mixed-spaces-and-tabs
+								  }
+								: {}
+						}
 					>
 						{i}
 					</span>,
@@ -73,7 +81,7 @@ export default function PageSelector(info: PageSelectorInfo) {
 					display: 'flex',
 					justifyContent: 'space-evenly',
 				}}
-                className='page-list-container'
+				className='page-list-container'
 			>
 				{pageList}
 			</span>

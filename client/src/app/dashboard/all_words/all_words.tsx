@@ -71,7 +71,7 @@ function AllWords() {
 		)
 	}, [navigate])
 	useLayoutEffect(() => {
-		;(async () => {
+		(async () => {
 			const err = await getWords(setWords, page, sortMethod, navigate, () => {})
 			setErrMessage(err)
 		})()
@@ -102,7 +102,7 @@ function AllWords() {
 				<ToolBar
 					method={sortMethod}
 					onMethodChange={(newMethod: SortMethod) => {
-						;(async () => {
+						(async () => {
 							const err = await getWords(
 								setWords,
 								page,
@@ -160,7 +160,7 @@ function AllWords() {
 					page={page}
 					pageCnt={pageCnt}
 					onPageChange={(newPage) => {
-						;(async () => {
+						(async () => {
 							const err = await getWords(
 								setWords,
 								newPage,

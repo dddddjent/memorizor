@@ -3,6 +3,13 @@ import { NavigateFunction } from 'react-router-dom'
 import config from './config'
 import { CSSProperties } from 'react'
 import { Mutex } from 'async-mutex'
+import { LoaderFunction } from 'react-router-dom'
+
+export type LoaderData<TLoaderFn extends LoaderFunction> = Awaited<
+	ReturnType<TLoaderFn>
+> extends Response | infer D
+	? D
+	: never
 
 export function generateURL(api: string, path: string): string {
 	return api + path
