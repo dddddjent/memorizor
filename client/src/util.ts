@@ -3,12 +3,6 @@ import { NavigateFunction } from 'react-router-dom'
 import config from './config'
 import { CSSProperties } from 'react'
 
-import { useDispatch, useSelector } from 'react-redux'
-import type { AppDispatch, RootState } from './store'
-
-export const useAppDispatch = useDispatch.withTypes<AppDispatch>()
-export const useAppSelector = useSelector.withTypes<RootState>()
-
 export function generateURL(api: string, path: string): string {
     return api + path
 }
@@ -32,7 +26,7 @@ export async function tryRequest(
     axios.defaults.headers.common[
         'Authorization'
     ] = `Bearer ${localStorage.getItem('access_token')}`
-    process().catch((err: AxiosError) => {
+    await process().catch((err: AxiosError) => {
         const responseData = err.response?.data as {
             error: {
                 type: string
