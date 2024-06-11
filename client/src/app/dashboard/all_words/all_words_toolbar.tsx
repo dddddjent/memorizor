@@ -69,8 +69,11 @@ function ToolBar({ method, onMethodChange }: ToolBarInterface) {
 				Add
 			</button>
 			<div id='toolbar-search'>
-				<label id='toolbar-search-label'>Search a word: </label>
-				<input id='toolbar-search-input' />
+				{
+					// <label id='toolbar-search-label'>Search a word: </label>
+					// <input id='toolbar-search-input' />
+				}
+				<span>All Words</span>
 			</div>
 			<select
 				id='toolbar-select'

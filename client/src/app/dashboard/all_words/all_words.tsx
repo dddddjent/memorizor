@@ -21,6 +21,7 @@ async function getWords(
 	page: number,
 	method: SortMethod,
 	navigate: NavigateFunction,
+	afterwards: () => void,
 ): Promise<string> {
 	const errMessage = ''
 	await tryRequest(
@@ -34,6 +35,7 @@ async function getWords(
 				),
 			)
 			setWords(list)
+			afterwards()
 		},
 		(error) => {
 			console.log(error)
@@ -69,11 +71,12 @@ function AllWords() {
 		)
 	}, [navigate])
 	useLayoutEffect(() => {
-		(async () => {
-			const err = await getWords(setWords, page, sortMethod, navigate)
+		;(async () => {
+			const err = await getWords(setWords, page, sortMethod, navigate, () => {})
 			setErrMessage(err)
 		})()
-	}, [page, sortMethod, navigate])
+	}, [])
+	// }, [page, sortMethod, navigate])
 
 	const list = words.map((value, index) => {
 		return (
@@ -98,7 +101,18 @@ function AllWords() {
 			<div id='toolbar'>
 				<ToolBar
 					method={sortMethod}
-					onMethodChange={(newMethod: SortMethod) => setSortMethod(newMethod)}
+					onMethodChange={(newMethod: SortMethod) => {
+						;(async () => {
+							const err = await getWords(
+								setWords,
+								page,
+								newMethod,
+								navigate,
+								() => setSortMethod(newMethod),
+							)
+							setErrMessage(err)
+						})()
+					}}
 				/>
 				<hr />
 			</div>
@@ -146,7 +160,16 @@ function AllWords() {
 					page={page}
 					pageCnt={pageCnt}
 					onPageChange={(newPage) => {
-						setPage(newPage)
+						;(async () => {
+							const err = await getWords(
+								setWords,
+								newPage,
+								sortMethod,
+								navigate,
+								() => setPage(newPage),
+							)
+							setErrMessage(err)
+						})()
 					}}
 				/>
 			</div>

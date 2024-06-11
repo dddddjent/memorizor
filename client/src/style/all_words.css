@@ -56,7 +56,8 @@
     width: 100%;
     position: relative;
     height: 2rem;
-    padding-top: 0.5rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
 }
 
 #word-line-container:hover {
@@ -67,8 +68,22 @@
     display: flex;
     align-items: center;
 }
-.word-line-span:hover{
+
+.word-line-span:hover {
     cursor: pointer;
+}
+
+#page-selector {
+    width: 100%;
+}
+
+.page-list-container>span {
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+}
+
+.page-number {
+    margin: 1%;
 }
 
 .page-number:hover {
