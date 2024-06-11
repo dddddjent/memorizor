@@ -1,72 +1,77 @@
 #all_words_root {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #toolbar {
-	height: 1.5rem;
-	width: 100%;
+    height: 1.5rem;
+    width: 100%;
 }
 
 #toolbar-root {
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 100%;
-	width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
 }
 
 #toolbar-add {
-	margin-left: 1rem;
+    margin-left: 1rem;
 }
 
 #toolbar-search {
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%, -50%);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #toolbar-search-label {
-	font-size: 0.6rem;
+    font-size: 0.6rem;
 }
 
 #toolbar-search-input {
-	font-size: 0.6rem;
-	width: 10rem;
+    font-size: 0.6rem;
+    width: 10rem;
 }
 
 #toolbar-select {
-	font-size: 0.8rem;
-	margin-right: 1rem;
-	height: 1.5rem;
+    font-size: 0.8rem;
+    margin-right: 1rem;
+    height: 1.5rem;
 }
 
 #main-content {
-	margin-top: 1rem;
-	width: 100%;
-	padding-bottom: 1rem;
+    margin-top: 1rem;
+    width: 100%;
+    padding-bottom: 1rem;
 }
 
 #word-line-container {
-	display: flex;
-	justify-content: space-between;
-	width: 100%;
-	position: relative;
-	height: 2rem;
-	padding-top: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+    height: 2rem;
+    padding-top: 0.5rem;
 }
 
 #word-line-container:hover {
-	background-color: grey;
+    background-color: grey;
 }
 
-.page-number {
+.word-line-span {
+    display: flex;
+    align-items: center;
+}
+.word-line-span:hover{
+    cursor: pointer;
 }
 
 .page-number:hover {
-	cursor: pointer;
+    cursor: pointer;
     color: red;
 }
