@@ -145,7 +145,20 @@ const ProfileAccount = function () {
 				asAxiosError(error, (error) => {
 					if (error.response?.status === 400)
 						extracBadRequest(error.response, setErrorMessage)
-					else {
+					else if (error.response?.status === 409) {
+						const response = error.response?.data as {
+							error: {
+								type: string
+								message: string
+							}
+						}
+						if (response.error.message.search('Resource Email') === 0)
+							setErrorMessage('Email already exists')
+						else if (response.error.message.search('Resource User') === 0)
+							setErrorMessage('User name already exists')
+						else setErrorMessage('Conflicted')
+						console.log(error)
+					} else {
 						setErrorMessage('Failed to save. Please retry.')
 						console.log(error)
 					}

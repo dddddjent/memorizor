@@ -57,7 +57,21 @@ func (r *sUserRepositoryPG) FindByEmail(email string) (*model.User, error) {
 
 func (r *sUserRepositoryPG) Update(id uuid.UUID, update_map map[string]any) (*model.User, error) {
 	r.db.Model(&model.User{}).Where("uuid = ?", id).Updates(update_map)
-	return r.FindByUUID(id)
+	user, err := r.FindByUUID(id)
+	if err != nil {
+		return nil, err
+	}
+	if email, exists := update_map["email"]; exists {
+		if email != user.Email {
+			return nil, util.NewConflict("Email", email.(string))
+		}
+	}
+	if userName, exists := update_map["user_name"]; exists {
+		if userName != user.UserName {
+			return nil, util.NewConflict("User name", userName.(string))
+		}
+	}
+	return user, nil
 }
 
 func (r *sUserRepositoryPG) UpdateProfileImageURL(id uuid.UUID, newURL string) error {
