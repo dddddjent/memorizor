@@ -1,0 +1,65 @@
+#today_root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#toolbar {
+    height: 1.5rem;
+    width: 100vw;
+    position: relative;
+}
+
+#toolbar-title {
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    font-size: 1.2rem;
+    transform: translate(-50%, 0%);
+    text-align: center;
+    width: 50%;
+}
+
+#today-main-content {
+    width: 100%;
+    height: auto;
+    padding-bottom: 0.5rem;
+}
+
+#single-day-root {
+    min-height: 8rem;
+    width: 100%;
+}
+
+#single-day-title {
+    display: flex;
+    align-items: center;
+}
+
+#single-day-title>hr {
+    flex-grow: 1;
+    height: 0.02rem;
+    background-color: black;
+}
+
+#word-card-container {
+    display: flex;
+    align-content: center;
+    flex-wrap: wrap;
+}
+
+#word-card-root {
+    height: 7rem;
+    width: 7rem;
+    min-width: 7rem;
+    border-radius: 10%;
+
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    background-color: grey;
+
+    display: flex;
+    flex-direction: column;
+}

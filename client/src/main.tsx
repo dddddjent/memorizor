@@ -10,6 +10,7 @@ import ProfileInfo from './app/account/profile_info'
 import ProfileAccount from './app/account/profile_account'
 import AllWords from './app/dashboard/all_words/all_words'
 import { dashboardLoader } from './app/dashboard/dashboard_loader'
+import Today from './app/dashboard/today/today'
 
 const router = createBrowserRouter([
     {
@@ -51,11 +52,11 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <div>today</div>,
+                element: <Today/>,
             },
             {
                 path: '/dashboard/today',
-                element: <div>today</div>,
+                element: <Today/>,
             },
             {
                 path: '/dashboard/all',
