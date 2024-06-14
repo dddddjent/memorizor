@@ -48,8 +48,12 @@ export default function Detail(param: DetailInterface) {
 	return (
 		<div id='detail-root'>
 			<div id='detail-content-container'>
-				<div style={{ width: '100%', display: 'flex' }}>
-					<button id='detail-close' onClick={param.onClose}>
+				<div style={{ width: '100%', display: 'flex', marginTop: '0.2rem' }}>
+					<button
+						id='detail-close'
+						onClick={param.onClose}
+						style={{ width: '3rem' }}
+					>
 						close
 					</button>
 				</div>
@@ -60,6 +64,13 @@ export default function Detail(param: DetailInterface) {
 								...leftAlignedPosition(LABEL_LEFT),
 								width: '70%',
 								overflow: 'auto',
+								background: 'inherit',
+								borderRadius: '6px',
+								borderStyle: 'solid',
+								borderColor: '#eeeeee',
+								borderWidth: '1px',
+								padding: '0.5rem',
+								color: 'inherit',
 								fontSize: '2.3rem',
 							}}
 							type='text'
@@ -100,7 +111,13 @@ export default function Detail(param: DetailInterface) {
 								style={{
 									overflowY: 'auto',
 									overflowWrap: 'anywhere',
-									background: '#dddddd',
+									background: 'inherit',
+									borderRadius: '6px',
+									borderStyle: 'solid',
+									borderColor: '#eeeeee',
+									borderWidth: '1px',
+									color: 'inherit',
+									padding: '0.5rem',
 									flexGrow: '100',
 									marginLeft: '1rem',
 									fontSize: '1rem',
@@ -120,9 +137,10 @@ export default function Detail(param: DetailInterface) {
 								style={{
 									overflowY: 'auto',
 									overflowWrap: 'anywhere',
-									background: '#dddddd',
 									flexGrow: '100',
 									marginLeft: '1rem',
+
+									borderRadius: '10px',
 								}}
 							>
 								{param.word.explanation}
@@ -146,8 +164,16 @@ export default function Detail(param: DetailInterface) {
 									textOverflow: 'ellipsis',
 									flexGrow: '100',
 									marginLeft: '1rem',
-									marginTop: '0.2rem',
-									marginBottom: '0.2rem',
+									marginTop: '0.4rem',
+									marginBottom: '0.4rem',
+
+									background: 'inherit',
+									borderRadius: '6px',
+									borderStyle: 'solid',
+									borderColor: '#eeeeee',
+									borderWidth: '1px',
+									paddingLeft: '0.5rem',
+									color: 'inherit',
 								}}
 								type='text'
 								placeholder="Word's external url"
@@ -166,6 +192,8 @@ export default function Detail(param: DetailInterface) {
 									overflowY: 'auto',
 									textOverflow: 'ellipsis',
 									flexGrow: '100',
+									marginTop: '0.4rem',
+									marginBottom: '0.4rem',
 									marginLeft: '1rem',
 								}}
 							>
@@ -187,6 +215,7 @@ export default function Detail(param: DetailInterface) {
 						<button
 							style={{
 								marginLeft: 'auto',
+								width: '3rem',
 							}}
 							onClick={handleSubmit}
 						>

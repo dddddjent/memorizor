@@ -107,7 +107,11 @@ const Crop = function ({ onClose }: CropProperties) {
 	return (
 		<div id='crop-page'>
 			<div id='crop-topbar'>
+				<label id='crop-input-button' htmlFor='crop-input'>
+					Browse
+				</label>
 				<input
+					id='crop-input'
 					type='file'
 					accept='image/png,image/jpg,image/jpeg'
 					onChange={handleInputFileChange}
@@ -141,11 +145,13 @@ const Crop = function ({ onClose }: CropProperties) {
 				</div>
 			</div>
 			<div id='crop-error'>{errorMessage}</div>
-			<div id='crop-upload-button'>
-				<button onClick={handleUpload} disabled={uploadDisabled}>
-					Upload
-				</button>
-			</div>
+			<button
+				id='crop-upload-button'
+				onClick={handleUpload}
+				disabled={uploadDisabled}
+			>
+				Upload
+			</button>
 		</div>
 	)
 }

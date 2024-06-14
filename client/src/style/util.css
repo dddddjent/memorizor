@@ -1,5 +1,20 @@
+body {
+    background-color: #212121;
+    color: #eeeeee;
+}
+
 button:hover {
     cursor: pointer;
+}
+
+button {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 10px;
+    padding-left: 0.5%;
+    padding-right: 0.5%;
+    background-color: inherit;
+    color: #eeeeee;
 }
 
 .flex-center {

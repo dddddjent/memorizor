@@ -36,13 +36,21 @@ const Profile = function () {
 	return (
 		<div id='profile'>
 			<div id='profile-sidebar'>
-				<button id='profile-back' onClick={() => navigate('/dashboard')}>
+				<button
+					id='profile-back'
+					className='profile-sidebar-button'
+					onClick={() => navigate('/dashboard')}
+				>
 					Back
 				</button>
 				<button
 					id='profile-information'
 					className='profile-sidebar-button'
-					style={{ backgroundColor: isInfoPage ? '#ffffff' : '#666666' }}
+					style={
+						isInfoPage
+							? { backgroundColor: '#444444' }
+							: { backgroundColor: 'inherit' }
+					}
 					onClick={() => {
 						setIsInfoPage(true)
 						navigate('/profile/info')
@@ -53,7 +61,11 @@ const Profile = function () {
 				<button
 					id='profile-acccount'
 					className='profile-sidebar-button'
-					style={{ backgroundColor: !isInfoPage ? '#ffffff' : '#666666' }}
+					style={
+						!isInfoPage
+							? { backgroundColor: '#444444' }
+							: { backgroundColor: 'inherit' }
+					}
 					onClick={() => {
 						setIsInfoPage(false)
 						navigate('/profile/account')
@@ -61,7 +73,11 @@ const Profile = function () {
 				>
 					Account
 				</button>
-				<button id='profile-signout' onClick={handleSignOut}>
+				<button
+					id='profile-signout'
+					className='profile-sidebar-button'
+					onClick={handleSignOut}
+				>
 					Signout
 				</button>
 			</div>

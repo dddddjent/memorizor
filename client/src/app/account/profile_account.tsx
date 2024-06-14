@@ -239,12 +239,43 @@ const ProfileAccount = function () {
 				)}
 			</div>
 			<div>{errorMessage}</div>
-			<div>
-				{!isEditing && <button onClick={handleEdit}>Edit</button>}
+			<div
+				style={{
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					width: '100%',
+				}}
+			>
+				{!isEditing && (
+					<button
+						onClick={handleEdit}
+						style={{
+							width: '3rem',
+						}}
+					>
+						Edit
+					</button>
+				)}
 				{isEditing && (
 					<div>
-						<button onClick={handleSave}>Save</button>
-						<button onClick={() => setIsEditing(false)}>Cancel</button>
+						<button
+							onClick={handleSave}
+							style={{
+								marginRight: '1rem',
+								width: '3.5rem',
+							}}
+						>
+							Save
+						</button>
+						<button
+							onClick={() => setIsEditing(false)}
+							style={{
+								width: '3.5rem',
+							}}
+						>
+							Cancel
+						</button>
 					</div>
 				)}
 			</div>

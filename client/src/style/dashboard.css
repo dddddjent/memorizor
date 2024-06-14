@@ -10,6 +10,7 @@
 	align-items: center;
 	justify-content: space-between;
 	position: relative;
+    margin-top: 0.5rem;
 }
 
 #titlebar-change-button {
@@ -31,11 +32,10 @@
 	padding: 0;
 	margin-right: 1rem;
 
-	background-color: inherit;
-
 	border-radius: 50%;
-	border-color: black;
 	border: solid;
+    border-width: 2px;
+    border-color: #cccccc;
 }
 
 #titlebar-img {
@@ -66,10 +66,13 @@
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
-	background-color: #ffffff;
+	background-color: #333333;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px 1px #888888;
 }
 
 #detail-close {
@@ -116,6 +119,7 @@
 	margin-top: auto;
 	margin-right: 1rem;
 	display: flex;
+    align-items: center;
 }
 
 #detail-bottom-row {

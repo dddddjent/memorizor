@@ -144,7 +144,15 @@ const ProfileInfo = function () {
 					id='user-image'
 					src={image_url === '' ? anonymouImageURL : image_url}
 				/>
-				<button onClick={() => setOpenCrop(true)}>Upload</button>
+				<button
+					onClick={() => setOpenCrop(true)}
+					style={{
+						marginTop: '1rem',
+						width: '4rem',
+					}}
+				>
+					Upload
+				</button>
 			</div>
 			<div id='user-info'>
 				<div className='user-info-row'>
@@ -195,6 +203,7 @@ const ProfileInfo = function () {
 					{isEditing && (
 						<input
 							className='user-info-content'
+							style={{ textAlign: 'left' }}
 							value={userEditingInfo.bio}
 							onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
 								setUserEditingInfo({
@@ -208,12 +217,50 @@ const ProfileInfo = function () {
 				</div>
 			</div>
 			<div>{errorMessage}</div>
-			<div>
-				{!isEditing && <button onClick={handleEdit}>Edit</button>}
+			<div
+				style={{
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					width: '100%',
+				}}
+			>
+				{!isEditing && (
+					<button
+						onClick={handleEdit}
+						style={{
+							width: '3rem',
+						}}
+					>
+						Edit
+					</button>
+				)}
 				{isEditing && (
-					<div>
-						<button onClick={handleSave}>Save</button>
-						<button onClick={() => setIsEditing(false)}>Cancel</button>
+					<div
+						style={{
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							width: '100%',
+						}}
+					>
+						<button
+							onClick={handleSave}
+							style={{
+								marginRight: '1rem',
+								width: '3.5rem',
+							}}
+						>
+							Save
+						</button>
+						<button
+							onClick={() => setIsEditing(false)}
+							style={{
+								width: '3.5rem',
+							}}
+						>
+							Cancel
+						</button>
 					</div>
 				)}
 			</div>

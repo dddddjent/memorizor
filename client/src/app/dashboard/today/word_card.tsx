@@ -52,7 +52,7 @@ export default function WordCard(param: WordCardInterface) {
 				text: 'OK',
 				onSubmit: async (): Promise<string> => {
 					if (clickedToday === true) {
-                        handleClose()
+						handleClose()
 						return ''
 					}
 					const result = { err: '' }
@@ -81,9 +81,14 @@ export default function WordCard(param: WordCardInterface) {
 	return (
 		<div
 			id='word-card-root'
-			style={{
-				backgroundColor: clickedToday ? '#ddffdd' : 'grey',
-			}}
+			style={
+				clickedToday
+					? {
+							backgroundColor: '#35bba9',
+							// eslint-disable-next-line no-mixed-spaces-and-tabs
+					  }
+					: {}
+			}
 		>
 			<div
 				style={{
@@ -117,6 +122,8 @@ export default function WordCard(param: WordCardInterface) {
 					style={{
 						marginLeft: 'auto',
 						marginRight: '0.2rem',
+						paddingLeft: '0.3rem',
+						paddingRight: '0.3rem',
 					}}
 					onClick={handleDetail}
 				>
